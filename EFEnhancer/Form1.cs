@@ -15,7 +15,7 @@ namespace EFEnhancer
     {
         public Form1()
         {
-            InitializeComponent();
+            InitializeComponent(); 
 
             treeView1.AfterSelect += treeView1_AfterSelect;
 
