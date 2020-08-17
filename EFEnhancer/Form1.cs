@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.Entity;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -11,84 +12,55 @@ using System.Windows.Forms;
 
 namespace EFEnhancer
 {
+
     public partial class Form1 : Form
     {
         public Form1()
         {
-            InitializeComponent(); 
+            InitializeComponent();
 
-            treeView1.AfterSelect += treeView1_AfterSelect;
-
-            var path = @"C:\Users\Ali\Source\Repos\WorkflowWeb\WorkflowWeb";
-            BuildTree(new DirectoryInfo(path), treeView1.Nodes);
-            //remove unnecessary folders
-            string[] valid = "Areas,Controllers,Views".Split(',');
-            List<TreeNode> toRemove = new List<TreeNode>();
-            foreach(TreeNode n in treeView1.Nodes[0].Nodes)
-            {
-                if(!valid.Contains(n.Text))
-                {
-                    toRemove.Add(n);                    
-                }
-            }
-
-            toRemove.ForEach((n) => { treeView1.Nodes.Remove(n); });
-
-            treeView1.ExpandAll();
+            syntaxEditor1.Document.Language = cSharpSyntaxLanguage1;
+            syntaxEditor2.Document.Language = xmlSyntaxLanguage1;
         }
-
+        List<Table> dbTables;
         private void button1_Click(object sender, EventArgs e)
         {
-            using (var fbd = new FolderBrowserDialog())
-            {
-                DialogResult result = fbd.ShowDialog();
+            treeView1.Nodes.Clear();
 
-                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+            var tables = new List<Table>();
+            var props = typeof(COMMENTSEntities).GetProperties();
+            foreach(var p in props)
+            {
+                if(p.PropertyType.Name.StartsWith("DbSet"))
                 {
-                    var di = new DirectoryInfo(fbd.SelectedPath);
-                    BuildTree(di, treeView1.Nodes);
+                    var type = p.PropertyType.GenericTypeArguments[0];
+                    var table = new Table { Type = type, Name = type.Name };
+                    tables.Add(table);
+
+                    var subprops = type.GetProperties();
+                    foreach(var sp in subprops)
+                    {
+                        var column = new Table.Column { Name = sp.Name, Type = sp.PropertyType };
+                        table.Columns.Add(column);
+                    }
                 }
             }
-        }
 
-        private void BuildTree(DirectoryInfo directoryInfo, TreeNodeCollection addInMe)
-        {
-            TreeNode curNode = addInMe.Add(directoryInfo.Name);
-
-            foreach (FileInfo file in directoryInfo.GetFiles())
+            foreach(var t in tables)
             {
-                curNode.Nodes.Add(file.FullName, file.Name);
-            }
-            foreach (DirectoryInfo subdir in directoryInfo.GetDirectories())
-            {
-                BuildTree(subdir, curNode.Nodes);
-            }
-        }
+                var tableNode = new TreeNode(t.Name) { Tag = t };
+                treeView1.Nodes.Add(tableNode);
 
-        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
-        {
-
-            if (e.Node.Name.EndsWith(".cs") || e.Node.Name.EndsWith(".cshtml"))
-            {
-               
-                StreamReader reader = new StreamReader(e.Node.Name);
-                if (e.Node.Name.EndsWith(".cs"))
+                foreach(var c in t.Columns)
                 {
-                    syntaxEditor1.Document.Language = cSharpSyntaxLanguage1;
-                    syntaxEditor2.Document.Language = syntaxEditor1.Document.Language;
+                    var columnNode = new TreeNode(c.Name) { Tag = c };
+                    tableNode.Nodes.Add(columnNode);
                 }
-                else
-                {
-                    syntaxEditor1.Document.Language = xmlSyntaxLanguage1;
-                    syntaxEditor2.Document.Language = syntaxEditor1.Document.Language;
-                }
-
-
-                syntaxEditor1.Text = reader.ReadToEnd();
-                
-                syntaxEditor2.Text = syntaxEditor1.Text;
-                reader.Close();
             }
+
+            dbTables = tables;
+
+
         }
 
         private void syntaxEditor1_ViewVerticalScroll(object sender, ActiproSoftware.SyntaxEditor.EditorViewEventArgs e)
@@ -96,6 +68,13 @@ namespace EFEnhancer
             //MessageBox.Show(e.View.FirstVisibleDisplayLineIndex.ToString());
             var line = e.View.FirstVisibleDisplayLineIndex;
             syntaxEditor2.Views[0].FirstVisibleDisplayLineIndex = line;
+        }
+
+        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            propertyGrid1.SelectedObject = e.Node.Tag;
+
+            syntaxEditor1.Text = (e.Node.Tag as Table).GetCode(dbTables);
         }
     }
 }
