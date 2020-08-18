@@ -16,6 +16,13 @@ namespace EFEnhancer
         public List<Column> Columns { get; set; }
         public Dictionary<Column, Table> ForeignKeys { get; set; }
 
+        public Column DisplayColumn
+        {
+            get
+            {
+                return Columns.FirstOrDefault(x => x.Name == "Name" || x.Name == "Title" || x.Type == typeof(String)) ?? Columns.First();
+            }
+        }
         public List<Column> PrimitiveColumns
         {
             get
@@ -43,6 +50,7 @@ namespace EFEnhancer
             public bool IsForeignKey { get { return ReferenceTable != null; } }
 
             public Table ReferenceTable { get; set; }
+            public Column NavigationProperty { get; set; }
 
             public bool IsSimpleType(Type type = null)
             {

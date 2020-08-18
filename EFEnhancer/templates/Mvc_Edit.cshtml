@@ -1,4 +1,4 @@
-﻿@model WorkflowWeb.Models.T_Comment
+﻿@model _namespace_.Models._table_
 
 @{
     var html_target = (ViewContext.RouteData.Values["html_target"] ?? Request.QueryString["html_target"]) as string;
@@ -16,13 +16,13 @@
     ajaxOptions: new AjaxOptions
     {
         HttpMethod = "POST",
-        OnBegin = "$('.loading').show();",
-        OnSuccess = "$('.loading').hide(); $('#" + modalId + "_modal *[data-dismiss=\"modal\"]').click();",
+        OnBegin = "modal_loading(true)",
+        OnSuccess = "hide_modal(this)",
         Confirm = null,
         AllowCache = false,
         InsertionMode = InsertionMode.Replace,
         OnFailure = "show_error",
-        OnComplete = "$('.loading').hide()",
+        OnComplete = "modal_loading(false)",
         UpdateTargetId = html_target
     },
     htmlAttributes: new

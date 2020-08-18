@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ActiproSoftware.SyntaxEditor.Addons.DotNet.Ast;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Core.Metadata.Edm;
@@ -12,7 +13,7 @@ namespace EFEnhancer
 {
     class EfParser
     {
-        DbContext DB;
+        public DbContext DB;
         public EfParser(DbContext db)
         {
             this.DB = db;
@@ -20,7 +21,7 @@ namespace EFEnhancer
         public List<Table> GetTables()
         {
             var tables = new List<Table>();
-            var props = typeof(COMMENTSEntities).GetProperties();
+            var props = DB.GetType().GetProperties();
             foreach (var p in props)
             {
                 if (p.PropertyType.Name.StartsWith("DbSet")) //tables
@@ -47,9 +48,10 @@ namespace EFEnhancer
                 foreach (var fk in fks)
                 {
                     var col = t.Columns.First(x => x.Name == fk.Key);
-                    var refTable = tables.First(x => x.Name == fk.Value);
+                    var refTable = tables.First(x => x.Name == fk.Value.Item1);
 
                     col.ReferenceTable = refTable;
+                    col.NavigationProperty = t.Columns.First(x => x.Name == fk.Value.Item2);
                     t.ForeignKeys.Add(col, refTable);
                 }
             }
@@ -57,10 +59,10 @@ namespace EFEnhancer
 
             return tables;
         }
-        private Dictionary<string, string> GetForeignKeyProperties(Type DBType)
+        private Dictionary<string, Tuple<string, string>> GetForeignKeyProperties(Type DBType)
         {
             EntityType table = GetTableEntityType(DBType);
-            Dictionary<string, string> foreignKeys = new Dictionary<string, string>();
+            Dictionary<string, Tuple<string, string>> foreignKeys = new Dictionary<string, Tuple<string, string>>();
 
             foreach (NavigationProperty np in table.NavigationProperties)
             {
@@ -77,7 +79,7 @@ namespace EFEnhancer
                     var key = constraint.ToProperties[0].Name;
                     if(!foreignKeys.ContainsKey(key))
                     {
-                        foreignKeys.Add(constraint.ToProperties[0].Name, constraint.FromRole.Name);
+                        foreignKeys.Add(constraint.ToProperties[0].Name,new Tuple<string, string>(constraint.FromRole.Name, np.Name));
                     }
                 }
                     
@@ -85,7 +87,6 @@ namespace EFEnhancer
 
             return foreignKeys;
         }
-
         private EntityType GetTableEntityType(Type DBType)
         {
             ObjectContext objContext = ((IObjectContextAdapter)DB).ObjectContext;

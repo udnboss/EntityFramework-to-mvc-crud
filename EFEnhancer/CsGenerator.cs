@@ -24,18 +24,31 @@ namespace EFEnhancer
         public string GenerateCode(string templateName)
         {
             var pktype = Table.Columns[0].Type.Name;
+            var pkname = Table.Columns[0].Name;
             var lookups = this.GetLookups();
-
+            var defaults = this.GetDefaults();
+            var include = this.GetInclude();
             var template = File.ReadAllText(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "templates\\" + templateName));
 
             template = template
                             .Replace("_namespace_", Namespace)
                             .Replace("_controller_", Table.Name)
                             .Replace("_table_", Table.Name)
+                            .Replace("_include_", include)
                             .Replace("_pktype_", pktype)
-                            .Replace("_lookups_", lookups);
+                            .Replace("_setnewguid_", pktype == "Guid" ? "m.ID = Guid.NewGuid(); " : "")
+                            .Replace("_pkname_", pkname)
+                            .Replace("_lookups_", lookups)
+                            .Replace("_defaults_", defaults);
 
             return template;
+        }
+
+        private string GetInclude()
+        {
+            var template = ".Include(x => x.{0})";
+            var includes = Table.Columns.Where(c => c.NavigationProperty != null).Select(c => string.Format(template, c.NavigationProperty.Name));
+            return string.Join("\r\n\t\t\t\t", includes);
         }
 
         private string GetLookups()
@@ -51,7 +64,22 @@ namespace EFEnhancer
                 lookupStrs.Add(tmp);
             }
 
-            return string.Join(",\n\t\t\t\t", lookupStrs);
+            return string.Join(",\r\n\t\t\t\t", lookupStrs);
         }        
+
+        private string GetDefaults()
+        {
+            var defaults = new List<string>();
+            foreach(var c in Table.PrimitiveColumns)
+            {
+                if(c.Type == typeof(DateTime))
+                {
+                    var d = string.Format("{0} = DateTime.Now", c.Name);
+                    defaults.Add(d);
+                }
+            }
+
+            return string.Join(",\r\n\t\t\t\t", defaults);
+        }
     }
 }

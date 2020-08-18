@@ -25,7 +25,8 @@ namespace EFEnhancer
             var data = files.Select(f => Path.GetFileNameWithoutExtension(f)).ToList();
             comboBox1.DataSource = data;
 
-            db = new COMMENTSEntities();
+            //db = new COMMENTSEntities();
+            db = new IMSEntities();
 
             syntaxEditor1.Document.Language = cSharpSyntaxLanguage1;
             syntaxEditor2.Document.Language = xmlSyntaxLanguage1;
@@ -88,6 +89,50 @@ namespace EFEnhancer
                 syntaxEditor2.Text = cshtmlGen.GenerateCode(templateName);
             }
 
+        }
+
+        public void GenerateFiles()
+        {
+            var controllerType = "Mvc";
+            var csTemplate = controllerType + ".cs";
+            var cshtmlInclude = "Index,Details,New,Edit".Split(',').Select(x => controllerType + "_" + x + ".cshtml");
+
+            var _namespace = "WorkflowWeb";
+
+            var controllers = new Dictionary<string, string>();
+            var views = new List<Tuple<string, string, string>>();
+
+            foreach (var table in dbTables)
+            {
+                var cshtmlGen = new CshtmlGenerator(_namespace, dbTables, table);
+                var csGen = new CsGenerator(_namespace, dbTables, table);
+
+                controllers.Add(table.Name + "Controller.cs", csGen.GenerateCode(csTemplate));
+                foreach (var templateName in cshtmlInclude)
+                {                    
+                    views.Add( new Tuple<string, string, string>(table.Name,templateName.Split('_')[1], cshtmlGen.GenerateCode(templateName)));
+                }                
+            }
+
+            //create files
+            foreach(var c in controllers)
+            {
+                var dir = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "output\\Controllers\\");
+                if (!Directory.Exists(dir)) { Directory.CreateDirectory(dir); }
+                File.WriteAllText(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "output\\Controllers\\" + c.Key), c.Value);
+            }
+            foreach (var c in views)
+            {
+                var dir = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "output\\Views\\" + c.Item1);
+                if (!Directory.Exists(dir)) { Directory.CreateDirectory(dir); }
+                File.WriteAllText(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "output\\Views\\" + c.Item1 + "\\" + c.Item2), c.Item3);
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            GenerateFiles();
+            MessageBox.Show("Done.");
         }
     }
 }

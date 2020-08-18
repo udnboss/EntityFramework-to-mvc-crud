@@ -29,7 +29,7 @@ namespace EFEnhancer
                     .Replace("_namespace_", Namespace)
                     .Replace("_table_", Table.Name)
                     .Replace("_theadColumns_", GetTheadColumns())
-                    .Replace("_tbodyColumns", GetTbodyColumns())
+                    .Replace("_tbodyColumns_", GetTbodyColumns())
                     .Replace("_detailFields_", GetFormDetail(templateName.Split('_')[0]))
                     .Replace("_editFields_", GetFormFields(templateName.Split('_')[0]))
                     .Replace("_newFields_", GetFormFields(templateName.Split('_')[0]));
@@ -45,7 +45,23 @@ namespace EFEnhancer
 
         string GetTbodyColumns()
         {
-            var tds = Table.PrimitiveColumns.Select(x => string.Format("<td>@Html.DisplayFor(modelItem => item.{0})</td>", x.Name)).ToList();
+            var template = "<td>@Html.DisplayFor(modelItem => item.{0})</td>";
+            var tds = new List<string>();
+            foreach(var c in Table.Columns)
+            {
+                if (c.IsSimpleType() || c.IsForeignKey)
+                {
+                    var name = c.Name;
+                    if (c.IsForeignKey)
+                    {
+
+                        name = c.ReferenceTable.Name + "." + c.ReferenceTable.DisplayColumn.Name;
+                    }
+
+                    tds.Add(string.Format(template, name));
+                }
+            }
+            
             return string.Join("\r\t\t\t\t\t\t", tds);
         }
 
@@ -59,17 +75,27 @@ namespace EFEnhancer
             
             foreach(var c in Table.Columns)
             {
-                if(c.IsForeignKey) //FK
+                if(c.IsForeignKey) //FK, get as a dropdownlist 
                 {
                     var referenceTable = c.ReferenceTable;
                     var columnTemplate = ddlTemplate.Replace("_column_", c.Name).Replace("_table_", referenceTable.Name).Replace("\r\n", "\r\n\t\t");
                     fields.Add(columnTemplate);
                 }
-                else if(primitiveColumns.Contains(c)) //primitive
+                else if(primitiveColumns.Contains(c)) //primitive 
                 {
-                    var columnTemplate = template.Replace("_column_", c.Name).Replace("\r\n", "\r\n\t\t");
-                    fields.Add(columnTemplate);
+                    if(c.Type == typeof(Guid)) //guid
+                    {
+                        var columnTemplate = string.Format("@Html.HiddenFor(m => m.{0})", c.Name);
+                        fields.Add(columnTemplate);
+                    }
+                    else //primitive
+                    {
+                        var columnTemplate = template.Replace("_column_", c.Name).Replace("\r\n", "\r\n\t\t");
+                        fields.Add(columnTemplate);
+                    }
+                    
                 }
+
             }
 
             return string.Join("\r\n\r\n\t\t", fields);
@@ -78,7 +104,20 @@ namespace EFEnhancer
         string GetFormDetail(string templateName)
         {
             var template = File.ReadAllText(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "templates\\" + templateName + "_FormDetail.cshtml"));
-            var fields = Table.Columns.Select(c => template.Replace("_column_", c.Name).Replace("\r\n", "\r\n\t\t")).ToList();
+
+            var fields = new List<string>();
+            foreach (var c in Table.Columns)
+            {                
+                if (c.IsSimpleType() || c.IsForeignKey)
+                {
+                    var name = c.Name;
+                    if (c.IsForeignKey)
+                    {
+                        name = c.ReferenceTable.Name + "." + c.ReferenceTable.DisplayColumn.Name;                        
+                    }
+                    fields.Add(template.Replace("_column_", c.Name).Replace("_refcolumn_", name).Replace("\r\n", "\r\n\t\t"));
+                }
+            }
 
             return string.Join("\r\n\r\n\t\t", fields);
         }

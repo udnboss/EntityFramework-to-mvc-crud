@@ -17,14 +17,14 @@ namespace _namespace_.Controllers
         public List<_table_> GetList()
         {
             db.Configuration.ProxyCreationEnabled = false;
-            var data = db._table_.ToList();
+            var data = db._table__include_.ToList();
             return data;
         }
 
         public _table_ Get(_pktype_ id)
         {
             db.Configuration.ProxyCreationEnabled = false;
-            return db._table_.Find(id);
+            return db._table__include_.FirstOrDefault(x=> x._pkname_ == id);
         }
 
         public bool Del(_pktype_ id)
@@ -69,7 +69,8 @@ namespace _namespace_.Controllers
 
         public ActionResult New()
         {
-            var m = new _table_();
+            var m = new _table_() { _defaults_ };
+                       
             ViewBag.Lookups = GetLookups();
             return PartialView(m);
         }
@@ -80,10 +81,10 @@ namespace _namespace_.Controllers
         {
             if (ModelState.IsValid)
             {
-                m.ID = _pktype_.New_pktype_(); 
+                _setnewguid_
                 db._table_.Add(m);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return PartialView("Index", GetList());
             }
 
             return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -113,7 +114,7 @@ namespace _namespace_.Controllers
             {
                 db.Entry(m).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return PartialView("Index", GetList());
             }
 
             return PartialView(ModelState);
@@ -124,7 +125,7 @@ namespace _namespace_.Controllers
         public ActionResult Delete(_table_ m)
         {
             Del(m.ID);
-            return RedirectToAction("Index");
+            return PartialView("Index", GetList());
         }
 
     }

@@ -31,8 +31,8 @@ namespace EFEnhancer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            ActiproSoftware.SyntaxEditor.Document document3 = new ActiproSoftware.SyntaxEditor.Document();
-            ActiproSoftware.SyntaxEditor.Document document4 = new ActiproSoftware.SyntaxEditor.Document();
+            ActiproSoftware.SyntaxEditor.Document document1 = new ActiproSoftware.SyntaxEditor.Document();
+            ActiproSoftware.SyntaxEditor.Document document2 = new ActiproSoftware.SyntaxEditor.Document();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.button1 = new System.Windows.Forms.Button();
@@ -41,19 +41,16 @@ namespace EFEnhancer
             this.syntaxEditor2 = new ActiproSoftware.SyntaxEditor.SyntaxEditor();
             this.xmlSyntaxLanguage1 = new ActiproSoftware.SyntaxEditor.Addons.Xml.XmlSyntaxLanguage(this.components);
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
-            this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
-            this.splitContainer4 = new System.Windows.Forms.SplitContainer();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.splitContainer4 = new System.Windows.Forms.SplitContainer();
+            this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
+            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.button2 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
-            this.splitContainer2.Panel1.SuspendLayout();
-            this.splitContainer2.Panel2.SuspendLayout();
-            this.splitContainer2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).BeginInit();
             this.splitContainer3.Panel1.SuspendLayout();
             this.splitContainer3.Panel2.SuspendLayout();
@@ -62,6 +59,10 @@ namespace EFEnhancer
             this.splitContainer4.Panel1.SuspendLayout();
             this.splitContainer4.Panel2.SuspendLayout();
             this.splitContainer4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
+            this.splitContainer2.Panel1.SuspendLayout();
+            this.splitContainer2.Panel2.SuspendLayout();
+            this.splitContainer2.SuspendLayout();
             this.SuspendLayout();
             // 
             // openFileDialog1
@@ -73,7 +74,7 @@ namespace EFEnhancer
             this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(215, 836);
+            this.treeView1.Size = new System.Drawing.Size(215, 738);
             this.treeView1.TabIndex = 1;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
@@ -83,14 +84,14 @@ namespace EFEnhancer
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 2;
-            this.button1.Text = "button1";
+            this.button1.Text = "Parse DB";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // syntaxEditor1
             // 
             this.syntaxEditor1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.syntaxEditor1.Document = document3;
+            this.syntaxEditor1.Document = document1;
             this.syntaxEditor1.Location = new System.Drawing.Point(0, 0);
             this.syntaxEditor1.Name = "syntaxEditor1";
             this.syntaxEditor1.Size = new System.Drawing.Size(570, 886);
@@ -101,7 +102,7 @@ namespace EFEnhancer
             // syntaxEditor2
             // 
             this.syntaxEditor2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.syntaxEditor2.Document = document4;
+            this.syntaxEditor2.Document = document2;
             this.syntaxEditor2.Location = new System.Drawing.Point(0, 0);
             this.syntaxEditor2.Name = "syntaxEditor2";
             this.syntaxEditor2.Size = new System.Drawing.Size(531, 886);
@@ -125,23 +126,6 @@ namespace EFEnhancer
             this.splitContainer1.SplitterDistance = 215;
             this.splitContainer1.TabIndex = 5;
             // 
-            // splitContainer2
-            // 
-            this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer2.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer2.Name = "splitContainer2";
-            // 
-            // splitContainer2.Panel1
-            // 
-            this.splitContainer2.Panel1.Controls.Add(this.syntaxEditor1);
-            // 
-            // splitContainer2.Panel2
-            // 
-            this.splitContainer2.Panel2.Controls.Add(this.syntaxEditor2);
-            this.splitContainer2.Size = new System.Drawing.Size(1105, 886);
-            this.splitContainer2.SplitterDistance = 570;
-            this.splitContainer2.TabIndex = 0;
-            // 
             // splitContainer3
             // 
             this.splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -151,6 +135,7 @@ namespace EFEnhancer
             // 
             // splitContainer3.Panel1
             // 
+            this.splitContainer3.Panel1.Controls.Add(this.button2);
             this.splitContainer3.Panel1.Controls.Add(this.comboBox1);
             this.splitContainer3.Panel1.Controls.Add(this.button1);
             // 
@@ -158,16 +143,16 @@ namespace EFEnhancer
             // 
             this.splitContainer3.Panel2.Controls.Add(this.treeView1);
             this.splitContainer3.Size = new System.Drawing.Size(215, 886);
-            this.splitContainer3.SplitterDistance = 46;
+            this.splitContainer3.SplitterDistance = 144;
             this.splitContainer3.TabIndex = 6;
             // 
-            // propertyGrid1
+            // comboBox1
             // 
-            this.propertyGrid1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.propertyGrid1.Location = new System.Drawing.Point(0, 0);
-            this.propertyGrid1.Name = "propertyGrid1";
-            this.propertyGrid1.Size = new System.Drawing.Size(318, 886);
-            this.propertyGrid1.TabIndex = 2;
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(94, 13);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(121, 21);
+            this.comboBox1.TabIndex = 3;
             // 
             // splitContainer4
             // 
@@ -186,13 +171,40 @@ namespace EFEnhancer
             this.splitContainer4.SplitterDistance = 318;
             this.splitContainer4.TabIndex = 2;
             // 
-            // comboBox1
+            // propertyGrid1
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(94, 13);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(121, 21);
-            this.comboBox1.TabIndex = 3;
+            this.propertyGrid1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.propertyGrid1.Location = new System.Drawing.Point(0, 0);
+            this.propertyGrid1.Name = "propertyGrid1";
+            this.propertyGrid1.Size = new System.Drawing.Size(318, 886);
+            this.propertyGrid1.TabIndex = 2;
+            // 
+            // splitContainer2
+            // 
+            this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer2.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer2.Name = "splitContainer2";
+            // 
+            // splitContainer2.Panel1
+            // 
+            this.splitContainer2.Panel1.Controls.Add(this.syntaxEditor1);
+            // 
+            // splitContainer2.Panel2
+            // 
+            this.splitContainer2.Panel2.Controls.Add(this.syntaxEditor2);
+            this.splitContainer2.Size = new System.Drawing.Size(1105, 886);
+            this.splitContainer2.SplitterDistance = 570;
+            this.splitContainer2.TabIndex = 0;
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(13, 60);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(128, 23);
+            this.button2.TabIndex = 4;
+            this.button2.Text = "Generate Files";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // Form1
             // 
@@ -206,10 +218,6 @@ namespace EFEnhancer
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
-            this.splitContainer2.Panel1.ResumeLayout(false);
-            this.splitContainer2.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
-            this.splitContainer2.ResumeLayout(false);
             this.splitContainer3.Panel1.ResumeLayout(false);
             this.splitContainer3.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
@@ -218,6 +226,10 @@ namespace EFEnhancer
             this.splitContainer4.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer4)).EndInit();
             this.splitContainer4.ResumeLayout(false);
+            this.splitContainer2.Panel1.ResumeLayout(false);
+            this.splitContainer2.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
+            this.splitContainer2.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -237,6 +249,7 @@ namespace EFEnhancer
         private System.Windows.Forms.SplitContainer splitContainer4;
         private System.Windows.Forms.PropertyGrid propertyGrid1;
         private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.Button button2;
     }
 }
 

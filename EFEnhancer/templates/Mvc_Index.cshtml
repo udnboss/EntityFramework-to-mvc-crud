@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<_namespace_.Models._table_>
     @{
-        var html_target = ViewBag.HtmlTarget; ///automate this!
+        var html_target = (ViewContext.RouteData.Values["html_target"] ?? Request.QueryString["html_target"]) as string;
         var controller = ViewContext.RouteData.Values["controller"].ToString();
         var modalId = Guid.NewGuid().ToString();
     }
@@ -15,13 +15,13 @@
             ajaxOptions: new AjaxOptions
             {
                 HttpMethod = "GET",
-                OnBegin = "$('.loading').show(); $('#" + modalId + "_modal').modal('show');",
-                OnSuccess = "$('.loading').hide()",
+                OnBegin = "show_modal('" + modalId +"')",
+                OnSuccess = "",
                 Confirm = null,
                 AllowCache = false,
                 InsertionMode = InsertionMode.Replace,
                 OnFailure = "show_error",
-                OnComplete = "$('.loading').hide()",
+                OnComplete = "modal_loading(false)",
                 UpdateTargetId = modalId + "_body"
             },
             htmlAttributes: new
@@ -53,13 +53,13 @@
                                     ajaxOptions: new AjaxOptions
                                     {
                                         HttpMethod = "GET",
-                                        OnBegin = "$('.loading').show(); $('#" + modalId + "_modal').modal('show');",
-                                        OnSuccess = "$('.loading').hide()",
+                                        OnBegin = "show_modal('" + modalId + "')",
+                                        OnSuccess = "",
                                         Confirm = null,
                                         AllowCache = false,
                                         InsertionMode = InsertionMode.Replace,
                                         OnFailure = "show_error",
-                                        OnComplete = "$('.loading').hide()",
+                                        OnComplete = "modal_loading(false)",
                                         UpdateTargetId = modalId + "_body"
                                     },
                                     htmlAttributes: new
@@ -74,32 +74,3 @@
             </table>
         </div>
     </div>
-
-    <!-- Modal -->
-    <div class="modal" id="@(modalId)_modal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="@(modalId)_title">Add New _table_..</h5>
-                    <button type="button" class="close" data-dismiss="modal">
-                        <span>&times;</span>
-                    </button>
-                </div>
-                <div id="@(modalId)_body" class="modal-body">
-
-                </div>
-                <div class="modal-footer">
-                    <span class="loading">Loading...</span>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        function show_error(error) {
-            console.log(error);
-        }
-    </script>
-
-
