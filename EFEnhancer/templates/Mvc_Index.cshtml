@@ -1,0 +1,105 @@
+﻿@model IEnumerable<_namespace_.Models._table_>
+    @{
+        var html_target = ViewBag.HtmlTarget; ///automate this!
+        var controller = ViewContext.RouteData.Values["controller"].ToString();
+        var modalId = Guid.NewGuid().ToString();
+    }
+
+    <div>
+        <div class="text-right">
+            @Ajax.ActionLink(
+            linkText: "Add New _table_..",
+            actionName: "New",
+            controllerName: controller,
+            routeValues: new { html_target = html_target, modal_id = modalId },
+            ajaxOptions: new AjaxOptions
+            {
+                HttpMethod = "GET",
+                OnBegin = "$('.loading').show(); $('#" + modalId + "_modal').modal('show');",
+                OnSuccess = "$('.loading').hide()",
+                Confirm = null,
+                AllowCache = false,
+                InsertionMode = InsertionMode.Replace,
+                OnFailure = "show_error",
+                OnComplete = "$('.loading').hide()",
+                UpdateTargetId = modalId + "_body"
+            },
+            htmlAttributes: new
+            {
+                @class = "btn btn-primary"
+            })
+        </div>
+
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            View
+                        </th>
+                        _theadColumns_
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Ajax.ActionLink(
+                                    linkText: "View",
+                                    actionName: "Details",
+                                    controllerName: controller,
+                                    routeValues: new { html_target = html_target, modal_id = modalId, id = item.ID },
+                                    ajaxOptions: new AjaxOptions
+                                    {
+                                        HttpMethod = "GET",
+                                        OnBegin = "$('.loading').show(); $('#" + modalId + "_modal').modal('show');",
+                                        OnSuccess = "$('.loading').hide()",
+                                        Confirm = null,
+                                        AllowCache = false,
+                                        InsertionMode = InsertionMode.Replace,
+                                        OnFailure = "show_error",
+                                        OnComplete = "$('.loading').hide()",
+                                        UpdateTargetId = modalId + "_body"
+                                    },
+                                    htmlAttributes: new
+                                    {
+                                        @class = "btn btn-primary btn-sm"
+                                    })
+                            </td>
+                            _tbodyColumns_
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="@(modalId)_modal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="@(modalId)_title">Add New _table_..</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div id="@(modalId)_body" class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <span class="loading">Loading...</span>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function show_error(error) {
+            console.log(error);
+        }
+    </script>
+
+

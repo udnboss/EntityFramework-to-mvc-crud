@@ -12,10 +12,8 @@ using _namespace_.Models;
 
 namespace _namespace_.Controllers
 {
-    public class _controller_Controller : BaseController
+    public class _table_Controller : BaseController
     {
-        private _entities_ db = new _entities_();
-
         public List<_table_> GetList()
         {
             db.Configuration.ProxyCreationEnabled = false;
@@ -51,7 +49,7 @@ namespace _namespace_.Controllers
 
         public ActionResult Index()
         {
-            return JsonOut(GetList());
+            return PartialView(GetList());            
         }
 
         public ActionResult Details(_pktype_ id)
@@ -66,18 +64,14 @@ namespace _namespace_.Controllers
                 return HttpNotFound();
             }
 
-            return JsonOut(m);
+            return PartialView(m);
         }
 
         public ActionResult New()
         {
-            var vm = new
-            {
-                data = new _table_(),
-                lookups = GetLookups()
-            };
-
-            return JsonOut(vm);
+            var m = new _table_();
+            ViewBag.Lookups = GetLookups();
+            return PartialView(m);
         }
 
         [HttpPost]
@@ -92,7 +86,7 @@ namespace _namespace_.Controllers
                 return RedirectToAction("Index");
             }
 
-            return JsonOut(ModelState);
+            return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
         }
 
         public ActionResult Edit(_pktype_ id)
@@ -107,13 +101,8 @@ namespace _namespace_.Controllers
                 return HttpNotFound();
             }
 
-            var vm = new
-            {
-                data = m,
-                lookups = GetLookups()
-            };
-
-            return JsonOut(vm);
+            ViewBag.Lookups = GetLookups();
+            return PartialView(m);
         }
 
         [HttpPost]
@@ -127,14 +116,15 @@ namespace _namespace_.Controllers
                 return RedirectToAction("Index");
             }
 
-            return JsonOut(ModelState);
+            return PartialView(ModelState);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(_table_ m)
         {
-            return JsonOut(new { status = Del(m.ID) });
+            Del(m.ID);
+            return RedirectToAction("Index");
         }
 
     }

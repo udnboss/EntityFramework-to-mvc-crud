@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Core.Objects;
+using System.Data.Entity.Infrastructure;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -19,47 +21,48 @@ namespace EFEnhancer
         {
             InitializeComponent();
 
+            var files = Directory.GetFiles(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "templates\\"), "*.cs");
+            var data = files.Select(f => Path.GetFileNameWithoutExtension(f)).ToList();
+            comboBox1.DataSource = data;
+
+            db = new COMMENTSEntities();
+
             syntaxEditor1.Document.Language = cSharpSyntaxLanguage1;
             syntaxEditor2.Document.Language = xmlSyntaxLanguage1;
         }
         List<Table> dbTables;
+        DbContext db;
         private void button1_Click(object sender, EventArgs e)
         {
+
+            var files = Directory.GetFiles(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "templates\\"), "*.cshtml").Select(x => Path.GetFileName(x));
+
             treeView1.Nodes.Clear();
-
-            var tables = new List<Table>();
-            var props = typeof(COMMENTSEntities).GetProperties();
-            foreach(var p in props)
-            {
-                if(p.PropertyType.Name.StartsWith("DbSet"))
-                {
-                    var type = p.PropertyType.GenericTypeArguments[0];
-                    var table = new Table { Type = type, Name = type.Name };
-                    tables.Add(table);
-
-                    var subprops = type.GetProperties();
-                    foreach(var sp in subprops)
-                    {
-                        var column = new Table.Column { Name = sp.Name, Type = sp.PropertyType };
-                        table.Columns.Add(column);
-                    }
-                }
-            }
-
+            var parser = new EfParser(db);
+            var tables = parser.GetTables();
+            
+            //build tree
             foreach(var t in tables)
             {
                 var tableNode = new TreeNode(t.Name) { Tag = t };
                 treeView1.Nodes.Add(tableNode);
-
+                TreeNode columnsFolder = tableNode.Nodes.Add("Columns");
                 foreach(var c in t.Columns)
                 {
                     var columnNode = new TreeNode(c.Name) { Tag = c };
-                    tableNode.Nodes.Add(columnNode);
+                    columnsFolder.Nodes.Add(columnNode);
                 }
+
+                TreeNode templatesFolder = tableNode.Nodes.Add("Templates");
+                foreach (var file in files)
+                {
+                    var fileNode = new TreeNode(file) { Tag = file };
+                    templatesFolder.Nodes.Add(fileNode);
+                }
+
             }
 
-            dbTables = tables;
-
+            dbTables = tables;            
 
         }
 
@@ -73,8 +76,18 @@ namespace EFEnhancer
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
             propertyGrid1.SelectedObject = e.Node.Tag;
+            if(e.Node.Tag is string)
+            {
+                var _namespace = "WorkflowWeb";
+                var table = (e.Node.Parent.Parent.Tag as Table);
+                var cshtmlGen = new CshtmlGenerator(_namespace, dbTables, table);
+                var csGen = new CsGenerator(_namespace, dbTables, table);
+                var templateName = e.Node.Tag.ToString();
+                var codeTemplate = templateName.Split('_')[0] + ".cs";
+                syntaxEditor1.Text = csGen.GenerateCode(codeTemplate);
+                syntaxEditor2.Text = cshtmlGen.GenerateCode(templateName);
+            }
 
-            syntaxEditor1.Text = (e.Node.Tag as Table).GetCode(dbTables);
         }
     }
 }

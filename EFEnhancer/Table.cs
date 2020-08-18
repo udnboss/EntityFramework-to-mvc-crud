@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ActiproSoftware.SyntaxEditor.Addons.DotNet.Ast;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,60 +14,56 @@ namespace EFEnhancer
         public Type Type { get; set; }
         public string Name { get; set; }
         public List<Column> Columns { get; set; }
+        public Dictionary<Column, Table> ForeignKeys { get; set; }
 
+        public List<Column> PrimitiveColumns
+        {
+            get
+            {
+                var primitive = Columns
+                        .Where(x => x.IsSimpleType())
+                        .ToList();
+
+                return primitive;
+            }
+        }
         public Table()
         {
             Columns = new List<Column>();
+            ForeignKeys = new Dictionary<Column, Table>();
         }
       
-        private string GetLookups(List<Table> otherTables)
-        {
-            var lookups = new Dictionary<Table.Column, Table>();
-            foreach(var c in Columns)
-            {
-                foreach(var t in otherTables)
-                {
-                    if(c.Type == t.Type)
-                    {
-                        //foreign key detected
-                        lookups.Add(c,t);
-                    }
-                }
-            }
-            var lookupStrs = new List<string>();
-            foreach(var lookup in lookups)
-            {
-                var c = lookup.Key;
-                var t = lookup.Value;
-                var pk = t.Columns[0];
-                var textCol = t.Columns[1].Name == "Name" ? t.Columns[1] : t.Columns[0];
-                var tmp = string.Format(@"{{""{0}"", db.{1}.Select(x => new {{ id = x.{2}, text = x.{3} }}).ToList() }}", c.Name, t.Name, pk.Name, textCol.Name);
-                lookupStrs.Add(tmp);
-            }
-
-            return string.Join(",\n\t\t\t\t", lookupStrs);
-        }
-
-        public string GetCode(List<Table> otherTables, string _namespace = "WorkflowWeb", string _controller = "Comment")
-        {
-            var pktype = Columns[0].Type.Name;
-            var lookups = GetLookups(otherTables);
-
-            var template = File.ReadAllText(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "templates\\Vue.cs"));
-
-            template = template
-                            .Replace("_namespace_", _namespace)
-                            .Replace("_controller_", _controller)
-                            .Replace("_table_", Name)
-                            .Replace("_pktype_", pktype)
-                            .Replace("_lookups_", lookups);
-
-            return template;
-        }
         public class Column
         {
             public Type Type { get; set; }
             public string Name { get; set; }
+
+            public bool IsPrimaryKey { get { return Name == "ID"; } }      
+            
+            public bool IsForeignKey { get { return ReferenceTable != null; } }
+
+            public Table ReferenceTable { get; set; }
+
+            public bool IsSimpleType(Type type = null)
+            {
+                if(type == null)
+                    type = this.Type;
+
+                return
+                    type.IsPrimitive ||
+                    new Type[] {
+                typeof(string),
+                typeof(decimal),
+                typeof(DateTime),
+                typeof(DateTimeOffset),
+                typeof(TimeSpan),
+                typeof(Guid)
+                    }.Contains(type) ||
+                    type.IsEnum ||
+                    Convert.GetTypeCode(type) != TypeCode.Object ||
+                    (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>) && IsSimpleType(type.GetGenericArguments()[0]))
+                    ;               
+            }
         }
     }
 }

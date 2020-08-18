@@ -1,0 +1,97 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Data.Entity.Core.Metadata.Edm;
+using System.Data.Entity.Core.Objects;
+using System.Data.Entity.Infrastructure;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace EFEnhancer
+{
+    class EfParser
+    {
+        DbContext DB;
+        public EfParser(DbContext db)
+        {
+            this.DB = db;
+        }
+        public List<Table> GetTables()
+        {
+            var tables = new List<Table>();
+            var props = typeof(COMMENTSEntities).GetProperties();
+            foreach (var p in props)
+            {
+                if (p.PropertyType.Name.StartsWith("DbSet")) //tables
+                {
+                    var type = p.PropertyType.GenericTypeArguments[0];
+                    var table = new Table { Type = type, Name = type.Name };
+                    tables.Add(table);
+
+                    var subprops = type.GetProperties();
+                    foreach (var sp in subprops)
+                    {
+                        if (!sp.PropertyType.Name.StartsWith("System.Collections.Generic.ICollection")) //skip collections
+                        {
+                            var column = new Table.Column { Name = sp.Name, Type = sp.PropertyType };
+                            table.Columns.Add(column);
+                        }
+                    }
+                }
+            }
+
+            foreach(var t in tables)
+            {
+                var fks = GetForeignKeyProperties(t.Type);
+                foreach (var fk in fks)
+                {
+                    var col = t.Columns.First(x => x.Name == fk.Key);
+                    var refTable = tables.First(x => x.Name == fk.Value);
+
+                    col.ReferenceTable = refTable;
+                    t.ForeignKeys.Add(col, refTable);
+                }
+            }
+            
+
+            return tables;
+        }
+        private Dictionary<string, string> GetForeignKeyProperties(Type DBType)
+        {
+            EntityType table = GetTableEntityType(DBType);
+            Dictionary<string, string> foreignKeys = new Dictionary<string, string>();
+
+            foreach (NavigationProperty np in table.NavigationProperties)
+            {
+                var association = (np.ToEndMember.DeclaringType as AssociationType);
+                var constraint = association.ReferentialConstraints.FirstOrDefault();
+
+                //((table.NavigationProperties[2].ToEndMember.DeclaringType) as AssociationType).ReferentialConstraints[0].ToProperties[0].Name
+
+                //if (constraint != null && constraint.ToRole.GetEntityType() == table)
+                //    foreignKeys.Add(np.Name, constraint.ToProperties.First().Name);
+
+                if (constraint != null && constraint.ToRole.GetEntityType() == table)
+                {
+                    var key = constraint.ToProperties[0].Name;
+                    if(!foreignKeys.ContainsKey(key))
+                    {
+                        foreignKeys.Add(constraint.ToProperties[0].Name, constraint.FromRole.Name);
+                    }
+                }
+                    
+            }
+
+            return foreignKeys;
+        }
+
+        private EntityType GetTableEntityType(Type DBType)
+        {
+            ObjectContext objContext = ((IObjectContextAdapter)DB).ObjectContext;
+            MetadataWorkspace workspace = objContext.MetadataWorkspace;
+            EntityType table = workspace.GetEdmSpaceType((StructuralType)workspace.GetItem<EntityType>(DBType.FullName, DataSpace.OSpace)) as EntityType;
+            return table;
+        }
+    }
+}

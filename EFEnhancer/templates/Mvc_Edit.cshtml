@@ -1,0 +1,48 @@
+﻿@model WorkflowWeb.Models.T_Comment
+
+@{
+    var html_target = (ViewContext.RouteData.Values["html_target"] ?? Request.QueryString["html_target"]) as string;
+    var controller = ViewContext.RouteData.Values["controller"].ToString();
+    var modalId = ViewContext.RouteData.Values["modal_id"] ?? Request.QueryString["modal_id"];
+    var formId = Guid.NewGuid().ToString();
+    var lookups = ViewBag.Lookups as Dictionary<string, object>;
+}
+
+
+@using (Ajax.BeginForm(
+    actionName: "Update",
+    controllerName: controller,
+    routeValues: new { html_target = html_target },
+    ajaxOptions: new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnBegin = "$('.loading').show();",
+        OnSuccess = "$('.loading').hide(); $('#" + modalId + "_modal *[data-dismiss=\"modal\"]').click();",
+        Confirm = null,
+        AllowCache = false,
+        InsertionMode = InsertionMode.Replace,
+        OnFailure = "show_error",
+        OnComplete = "$('.loading').hide()",
+        UpdateTargetId = html_target
+    },
+    htmlAttributes: new
+    {
+        id = formId
+    }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>T_Comment</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        _editFields_
+
+        <div class="form-group row">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Update" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}

@@ -31,8 +31,8 @@ namespace EFEnhancer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            ActiproSoftware.SyntaxEditor.Document document1 = new ActiproSoftware.SyntaxEditor.Document();
-            ActiproSoftware.SyntaxEditor.Document document2 = new ActiproSoftware.SyntaxEditor.Document();
+            ActiproSoftware.SyntaxEditor.Document document3 = new ActiproSoftware.SyntaxEditor.Document();
+            ActiproSoftware.SyntaxEditor.Document document4 = new ActiproSoftware.SyntaxEditor.Document();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.button1 = new System.Windows.Forms.Button();
@@ -45,6 +45,7 @@ namespace EFEnhancer
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
             this.splitContainer4 = new System.Windows.Forms.SplitContainer();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -89,7 +90,7 @@ namespace EFEnhancer
             // syntaxEditor1
             // 
             this.syntaxEditor1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.syntaxEditor1.Document = document1;
+            this.syntaxEditor1.Document = document3;
             this.syntaxEditor1.Location = new System.Drawing.Point(0, 0);
             this.syntaxEditor1.Name = "syntaxEditor1";
             this.syntaxEditor1.Size = new System.Drawing.Size(570, 886);
@@ -100,7 +101,7 @@ namespace EFEnhancer
             // syntaxEditor2
             // 
             this.syntaxEditor2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.syntaxEditor2.Document = document2;
+            this.syntaxEditor2.Document = document4;
             this.syntaxEditor2.Location = new System.Drawing.Point(0, 0);
             this.syntaxEditor2.Name = "syntaxEditor2";
             this.syntaxEditor2.Size = new System.Drawing.Size(531, 886);
@@ -150,6 +151,7 @@ namespace EFEnhancer
             // 
             // splitContainer3.Panel1
             // 
+            this.splitContainer3.Panel1.Controls.Add(this.comboBox1);
             this.splitContainer3.Panel1.Controls.Add(this.button1);
             // 
             // splitContainer3.Panel2
@@ -183,6 +185,14 @@ namespace EFEnhancer
             this.splitContainer4.Size = new System.Drawing.Size(1427, 886);
             this.splitContainer4.SplitterDistance = 318;
             this.splitContainer4.TabIndex = 2;
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(94, 13);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(121, 21);
+            this.comboBox1.TabIndex = 3;
             // 
             // Form1
             // 
@@ -226,6 +236,7 @@ namespace EFEnhancer
         private System.Windows.Forms.SplitContainer splitContainer3;
         private System.Windows.Forms.SplitContainer splitContainer4;
         private System.Windows.Forms.PropertyGrid propertyGrid1;
+        private System.Windows.Forms.ComboBox comboBox1;
     }
 }
 

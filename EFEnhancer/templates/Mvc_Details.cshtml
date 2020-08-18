@@ -1,0 +1,65 @@
+﻿@model WorkflowWeb.Models.T_Comment
+
+@{
+    var html_target = (ViewContext.RouteData.Values["html_target"] ?? Request.QueryString["html_target"]) as string;
+    var controller = ViewContext.RouteData.Values["controller"].ToString();
+    var modalId = ViewContext.RouteData.Values["modal_id"] ?? Request.QueryString["modal_id"] as string;
+    var formId = Guid.NewGuid().ToString();
+}
+
+<div>
+    <h4>T_Comment</h4>
+    <hr />
+    <div>
+        _detailFields_
+    </div>
+</div>
+<p>
+    @Ajax.ActionLink(
+        linkText: "Edit",
+        actionName: "Edit",
+        controllerName: controller,
+        routeValues: new { id = Model.ID, modal_id = modalId, html_target = html_target },
+        ajaxOptions: new AjaxOptions
+        {
+            HttpMethod = "GET",
+            OnBegin = "$('.loading').show();",
+            OnSuccess = "$('.loading').hide()",
+            Confirm = null,
+            AllowCache = false,
+            InsertionMode = InsertionMode.Replace,
+            OnFailure = "show_error",
+            OnComplete = "$('.loading').hide()",
+            UpdateTargetId = modalId + "_body"
+        },
+        htmlAttributes: new
+        {
+            @class = "btn btn-primary"
+        })
+
+    @using (Ajax.BeginForm(
+        actionName: "Delete",
+        controllerName: controller,
+        routeValues: new { id = Model.ID, modal_id = modalId, html_target = html_target },
+        ajaxOptions: new AjaxOptions
+        {
+            HttpMethod = "POST",
+            OnBegin = "$('.loading').show();",
+            OnSuccess = "$('.loading').hide(); $('#" + modalId + "_modal *[data-dismiss=\"modal\"]').click();",
+            Confirm = null,
+            AllowCache = false,
+            InsertionMode = InsertionMode.Replace,
+            OnFailure = "show_error",
+            OnComplete = "$('.loading').hide()",
+            UpdateTargetId = html_target
+        },
+        htmlAttributes: new
+        {
+            id = formId
+        }))
+    {
+        @Html.AntiForgeryToken()
+        <button type="submit" class="btn btn-danger" onclick="return confirm('Confirm delete?')">Delete</button>
+    }
+
+</p>
