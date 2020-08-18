@@ -39,7 +39,7 @@ namespace EFEnhancer
 
         string GetTheadColumns()
         {
-            var ths = Table.PrimitiveColumns.Select(x => string.Format("<th>@Html.DisplayNameFor(m => m.{0})</th>", x.Name)).ToList();
+            var ths = Table.PrimitiveColumns.Where(x => x.Name != "ID").Select(x => string.Format("<th>@Html.DisplayNameFor(m => m.{0})</th>", x.Name)).ToList();
             return string.Join("\r\t\t\t\t\t", ths);
         }
 
@@ -47,7 +47,7 @@ namespace EFEnhancer
         {
             var template = "<td>@Html.DisplayFor(modelItem => item.{0})</td>";
             var tds = new List<string>();
-            foreach(var c in Table.Columns)
+            foreach(var c in Table.Columns.Where(x => x.Name != "ID"))
             {
                 if (c.IsSimpleType() || c.IsForeignKey)
                 {
