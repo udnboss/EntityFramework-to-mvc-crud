@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -49,8 +50,31 @@ namespace EFEnhancer
             
             public bool IsForeignKey { get { return ReferenceTable != null; } }
 
+            public bool IsCollection
+            {
+                get
+                {
+                    return Type.IsInterface;
+                }
+            }
+
+            public Type ActualType
+            {
+                get
+                {
+                    return IsCollection || Type.IsGenericType ? this.Type.GenericTypeArguments[0] : this.Type;
+                }
+            }
+
             public Table ReferenceTable { get; set; }
             public Column NavigationProperty { get; set; }
+            public string DisplayName
+            {
+                get
+                {
+                    return Name.Any(char.IsUpper) ? Regex.Replace(Name, "([a-z])([A-Z])", "$1 $2") : Name;
+                }
+            }
 
             public bool IsSimpleType(Type type = null)
             {

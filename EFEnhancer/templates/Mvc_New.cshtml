@@ -1,4 +1,4 @@
-﻿@model _namespace_.Models._table_
+﻿@model _namespace_.ViewModels._table_ViewModel
 
 @{
     var html_target = (ViewContext.RouteData.Values["html_target"] ?? Request.QueryString["html_target"]) as string;
@@ -42,14 +42,19 @@
         <script>
             $(function () {
                 $('form#@formId select').each(function () {
-                    $(this).prepend('<option value=""></option>');
+                    $(this).prepend('<option value=""></option>'); //allow empty selections
                 });
+
+                $.validator.unobtrusive.parse("form#@formId"); //enable validations
             });
         </script>
 
         <div class="form-group row">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+            <div class="col-md-2">
+
+            </div>
+            <div class="col-md-10">
+                <button type="submit" class="btn btn-success">Create</button>
             </div>
         </div>
     </div>

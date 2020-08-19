@@ -1,4 +1,4 @@
-﻿@model _namespace_.Models._table_
+﻿@model _namespace_.ViewModels._table_ViewModel
 
 @{
     var html_target = (ViewContext.RouteData.Values["html_target"] ?? Request.QueryString["html_target"]) as string;
@@ -14,28 +14,33 @@
         _detailFields_
     </div>
 </div>
-<p>
-    @Ajax.ActionLink(
-        linkText: "Edit",
-        actionName: "Edit",
-        controllerName: controller,
-        routeValues: new { id = Model.ID, modal_id = modalId, html_target = html_target },
-        ajaxOptions: new AjaxOptions
-        {
-            HttpMethod = "GET",
-            OnBegin = "modal_loading(true)",
-            OnSuccess = "",
-            Confirm = null,
-            AllowCache = false,
-            InsertionMode = InsertionMode.Replace,
-            OnFailure = "show_error",
-            OnComplete = "modal_loading(false)",
-            UpdateTargetId = modalId + "_body"
-        },
-        htmlAttributes: new
-        {
-            @class = "btn btn-primary"
-        })
+
+<div class="form-group row">
+    <div class="col-md-2">
+
+    </div>
+    <div class="col-md-10">
+        @Ajax.ActionLink(
+    linkText: "Edit",
+    actionName: "Edit",
+    controllerName: controller,
+    routeValues: new { id = Model.ID, modal_id = modalId, html_target = html_target },
+    ajaxOptions: new AjaxOptions
+    {
+        HttpMethod = "GET",
+        OnBegin = "modal_loading(true)",
+        OnSuccess = "",
+        Confirm = null,
+        AllowCache = false,
+        InsertionMode = InsertionMode.Replace,
+        OnFailure = "show_error",
+        OnComplete = "modal_loading(false)",
+        UpdateTargetId = modalId + "_body"
+    },
+    htmlAttributes: new
+    {
+        @class = "btn btn-primary btn-sm"
+    })
 
     @using (Ajax.BeginForm(
         actionName: "Delete",
@@ -55,11 +60,13 @@
         },
         htmlAttributes: new
         {
+            @class = "d-inline form-inline",
             id = formId
         }))
-    {
-        @Html.AntiForgeryToken()
-        <button type="submit" class="btn btn-danger" onclick="return confirm('Confirm delete?')">Delete</button>
-    }
+        {
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Confirm delete?')">Delete</button>
+        }
 
-</p>
+    </div>
+</div>

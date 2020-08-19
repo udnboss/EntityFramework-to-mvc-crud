@@ -40,7 +40,7 @@ namespace EFEnhancer
         string GetTheadColumns()
         {
             var ths = Table.PrimitiveColumns.Where(x => x.Name != "ID").Select(x => string.Format("<th>@Html.DisplayNameFor(m => m.{0})</th>", x.Name)).ToList();
-            return string.Join("\r\t\t\t\t\t", ths);
+            return string.Join("\r\n\t\t\t\t\t", ths);
         }
 
         string GetTbodyColumns()
@@ -62,7 +62,7 @@ namespace EFEnhancer
                 }
             }
             
-            return string.Join("\r\t\t\t\t\t\t", tds);
+            return string.Join("\r\n\t\t\t\t\t\t", tds);
         }
 
         string GetFormFields(string templateName)

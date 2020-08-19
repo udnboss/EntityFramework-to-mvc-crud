@@ -1,4 +1,4 @@
-﻿@model IEnumerable<_namespace_.Models._table_>
+﻿@model IEnumerable<_namespace_.ViewModels._table_ViewModel>
     @{
         var html_target = (ViewContext.RouteData.Values["html_target"] ?? Request.QueryString["html_target"]) as string;
         var controller = ViewContext.RouteData.Values["controller"].ToString();
@@ -6,7 +6,7 @@
     }
 
     <div>
-        <div class="text-right">
+        <div class="text-right mb-5">
             @Ajax.ActionLink(
             linkText: "Add New _table_..",
             actionName: "New",
@@ -26,7 +26,7 @@
             },
             htmlAttributes: new
             {
-                @class = "btn btn-primary"
+                @class = "btn btn-outline-primary btn-sm"
             })
         </div>
 
@@ -64,7 +64,7 @@
                                     },
                                     htmlAttributes: new
                                     {
-                                        @class = "btn btn-primary btn-sm"
+                                        @class = "btn btn-outline-primary btn-sm"
                                     })
                             </td>
                             _tbodyColumns_

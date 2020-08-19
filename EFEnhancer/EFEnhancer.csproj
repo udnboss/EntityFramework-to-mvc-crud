@@ -132,7 +132,13 @@
     <None Include="templates\Vue.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="templates\Mvc.cs">
+    <None Include="templates\Mvc_Controller.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="templates\Mvc_Metadata.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="templates\Mvc_ViewModel.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <Compile Include="TIMS_Contractor.cs">

@@ -28,6 +28,10 @@ namespace EFEnhancer
             var lookups = this.GetLookups();
             var defaults = this.GetDefaults();
             var include = this.GetInclude();
+            var properties = this.GetProperties();
+            var copy = this.GetCopyProperties();
+            var tomodel = this.GetToModelProperties();
+
             var template = File.ReadAllText(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "templates\\" + templateName));
 
             template = template
@@ -39,7 +43,10 @@ namespace EFEnhancer
                             .Replace("_setnewguid_", pktype == "Guid" ? "m.ID = Guid.NewGuid(); " : "")
                             .Replace("_pkname_", pkname)
                             .Replace("_lookups_", lookups)
-                            .Replace("_defaults_", defaults);
+                            .Replace("_defaults_", defaults)
+                            .Replace("_properties_", properties)
+                            .Replace("_copyproperties_", copy)
+                            .Replace("_tomodelproperties_", tomodel);
 
             return template;
         }
@@ -80,6 +87,115 @@ namespace EFEnhancer
             }
 
             return string.Join(",\r\n\t\t\t\t", defaults);
+        }
+
+        private string GetProperties()
+        {
+            var tableNames = Tables.Select(x => x.Name).ToList();
+
+            var props = new List<string>();
+            foreach (var c in Table.Columns)
+            {
+                var lines = new List<string>();
+                if(c.Name == "ID")
+                {
+                    lines.Add(string.Format("[Required(AllowEmptyStrings = false, ErrorMessage = \"{0} is required.\")]", c.DisplayName));
+                }
+                else if (c.Name == "Name" || c.Name == "Title")
+                {
+                    lines.Add(string.Format("[Required(AllowEmptyStrings = false, ErrorMessage = \"{0} is required.\")]", c.DisplayName));
+                }
+
+                lines.Add(string.Format("[DisplayName(\"{0}\")]", c.DisplayName));
+
+                var typename = c.ActualType.Name;
+                if(tableNames.Contains(typename)) //this is an entity reference?
+                {
+                    typename = string.Format("{0}ViewModel", typename);
+                }
+                               
+                if(c.IsCollection)
+                {
+                    lines.Add(string.Format("public List<{0}> {1} {{ get; set; }}", typename, c.Name));
+                }
+                else
+                {
+                    lines.Add(string.Format("public {0} {1} {{ get; set; }}", typename + (c.Type.Name.StartsWith("Nullable") ? "?" : ""), c.Name));
+                }
+
+                lines.Add("");
+
+                props.Add(string.Join("\r\n\t\t", lines));
+            }
+
+            return string.Join("\r\n\t\t", props);
+        }
+
+        private string GetCopyProperties()
+        {
+            var tableNames = Tables.Select(x => x.Name).ToList();
+
+            var props = new List<string>();
+            foreach (var c in Table.Columns)
+            {
+                var typename = c.ActualType.Name;
+                if (tableNames.Contains(typename)) //this is an entity reference?
+                {
+                    typename = string.Format("{0}ViewModel", typename);
+
+                    if (c.IsCollection)
+                    {
+                        props.Add(string.Format("this.{0} = convertSubs && m.{0} != null ? m.{0}.Select(x => new {1}(x)).ToList() : null;", c.Name, typename));
+                    }
+                    else
+                    {
+                        props.Add(string.Format("this.{0} = convertSubs ? new {1}(m.{0}) : null;", c.Name, typename));
+                    }
+                }
+                else
+                {
+                    if (c.IsCollection)
+                    {
+                        props.Add(string.Format("this.{0} = m.{0}.ToList();", c.Name));
+                    }
+                    else
+                    {
+                        props.Add(string.Format("this.{0} = m.{0};", c.Name));
+                    }
+                }
+                
+               
+            }
+
+            return string.Join("\r\n\t\t\t\t", props);
+        }
+
+        private string GetToModelProperties()
+        {
+            var tableNames = Tables.Select(x => x.Name).ToList();
+
+            var props = new List<string>();
+            foreach (var c in Table.Columns)
+            {
+                var typename = c.ActualType.Name;
+                if (tableNames.Contains(typename)) //this is an entity reference?
+                {
+                    if (c.IsCollection)
+                    {
+                        props.Add(string.Format("m.{0} = convertSubs ? this.{0}.Select(x => x.ToModel()).ToList() : null;", c.Name, typename));
+                    }
+                    else
+                    {
+                        props.Add(string.Format("m.{0} = convertSubs ? this.{0}.ToModel() : null;", c.Name, typename));
+                    }
+                }
+                else
+                {
+                    props.Add(string.Format("m.{0} = this.{0};", c.Name));
+                }
+            }
+
+            return string.Join("\r\n\t\t\t", props);
         }
     }
 }

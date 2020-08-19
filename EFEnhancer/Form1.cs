@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ActiproSoftware.SyntaxEditor;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -28,15 +29,15 @@ namespace EFEnhancer
             //db = new COMMENTSEntities();
             db = new IMSEntities();
 
-            syntaxEditor1.Document.Language = cSharpSyntaxLanguage1;
-            syntaxEditor2.Document.Language = xmlSyntaxLanguage1;
+            //syntaxEditor1.Document.Language = cSharpSyntaxLanguage1;
+            //syntaxEditor2.Document.Language = xmlSyntaxLanguage1;
         }
         List<Table> dbTables;
         DbContext db;
         private void button1_Click(object sender, EventArgs e)
         {
 
-            var files = Directory.GetFiles(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "templates\\"), "*.cshtml").Select(x => Path.GetFileName(x));
+            var files = Directory.GetFiles(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "templates\\"), "*.cs*").Select(x => Path.GetFileName(x));
 
             treeView1.Nodes.Clear();
             var parser = new EfParser(db);
@@ -70,8 +71,8 @@ namespace EFEnhancer
         private void syntaxEditor1_ViewVerticalScroll(object sender, ActiproSoftware.SyntaxEditor.EditorViewEventArgs e)
         {
             //MessageBox.Show(e.View.FirstVisibleDisplayLineIndex.ToString());
-            var line = e.View.FirstVisibleDisplayLineIndex;
-            syntaxEditor2.Views[0].FirstVisibleDisplayLineIndex = line;
+            //var line = e.View.FirstVisibleDisplayLineIndex;
+            //syntaxEditor2.Views[0].FirstVisibleDisplayLineIndex = line;
         }
 
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
@@ -84,9 +85,11 @@ namespace EFEnhancer
                 var cshtmlGen = new CshtmlGenerator(_namespace, dbTables, table);
                 var csGen = new CsGenerator(_namespace, dbTables, table);
                 var templateName = e.Node.Tag.ToString();
-                var codeTemplate = templateName.Split('_')[0] + ".cs";
-                syntaxEditor1.Text = csGen.GenerateCode(codeTemplate);
-                syntaxEditor2.Text = cshtmlGen.GenerateCode(templateName);
+
+                var isCs = templateName.EndsWith(".cs");
+
+                syntaxEditor1.Document.Language = isCs ? cSharpSyntaxLanguage1 as SyntaxLanguage : xmlSyntaxLanguage1;
+                syntaxEditor1.Text = isCs ? csGen.GenerateCode(templateName) : cshtmlGen.GenerateCode(templateName);
             }
 
         }
@@ -94,13 +97,15 @@ namespace EFEnhancer
         public void GenerateFiles()
         {
             var controllerType = "Mvc";
-            var csTemplate = controllerType + ".cs";
+            var csTemplate = controllerType + "_Controller.cs";
+            var vmTemplate = controllerType + "_ViewModel.cs";
             var cshtmlInclude = "Index,Details,New,Edit".Split(',').Select(x => controllerType + "_" + x + ".cshtml");
 
             var _namespace = "WorkflowWeb";
 
             var controllers = new Dictionary<string, string>();
             var views = new List<Tuple<string, string, string>>();
+            var viewmodels = new Dictionary<string, string>();
 
             foreach (var table in dbTables)
             {
@@ -108,6 +113,8 @@ namespace EFEnhancer
                 var csGen = new CsGenerator(_namespace, dbTables, table);
 
                 controllers.Add(table.Name + "Controller.cs", csGen.GenerateCode(csTemplate));
+                viewmodels.Add(table.Name + "ViewModel.cs", csGen.GenerateCode(vmTemplate));
+
                 foreach (var templateName in cshtmlInclude)
                 {                    
                     views.Add( new Tuple<string, string, string>(table.Name,templateName.Split('_')[1], cshtmlGen.GenerateCode(templateName)));
@@ -115,12 +122,23 @@ namespace EFEnhancer
             }
 
             //create files
+            //Controllers
             foreach(var c in controllers)
             {
                 var dir = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "output\\Controllers\\");
                 if (!Directory.Exists(dir)) { Directory.CreateDirectory(dir); }
                 File.WriteAllText(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "output\\Controllers\\" + c.Key), c.Value);
             }
+
+            //ViewModels
+            foreach (var c in viewmodels)
+            {
+                var dir = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "output\\ViewModels\\");
+                if (!Directory.Exists(dir)) { Directory.CreateDirectory(dir); }
+                File.WriteAllText(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "output\\ViewModels\\" + c.Key), c.Value);
+            }
+
+            //Views
             foreach (var c in views)
             {
                 var dir = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "output\\Views\\" + c.Item1);
