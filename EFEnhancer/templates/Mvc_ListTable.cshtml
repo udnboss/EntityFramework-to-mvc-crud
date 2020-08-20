@@ -55,7 +55,7 @@
                 <tbody>
                     @foreach (var item in Model)
                     {
-                        <tr class="@(currentItem != null && item._pkname_ == currentItem._pkname_ ? "bg-info" : "")">
+                        <tr class="@(currentItem != null && item._pkname_ == currentItem._pkname_ ? "table-warning" : "")">
                             <td>
                                 @Ajax.ActionLink(
                                     linkText: "View",

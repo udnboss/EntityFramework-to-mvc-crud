@@ -39,7 +39,7 @@
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal">
-        <h4>@Model._displaycolumn_</h4>
+        <h4>Create New _tablename_</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
@@ -47,10 +47,6 @@
 
         <script>
             $(function () {
-                $('form#@ui_form_id select').each(function () {
-                    $(this).prepend('<option value=""></option>'); //allow empty selections
-                });
-
                 $.validator.unobtrusive.parse("form#@ui_form_id"); //enable validations
             });
         </script>

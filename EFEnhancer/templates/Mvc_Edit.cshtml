@@ -47,10 +47,6 @@
 
         <script>
             $(function () {
-                $('form#@ui_form_id select').each(function () {
-                    $(this).prepend('<option value=""></option>'); //allow empty selections
-                });
-
                 $.validator.unobtrusive.parse("form#@ui_form_id"); //enable validations
             });
         </script>

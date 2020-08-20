@@ -15,30 +15,56 @@ namespace _namespace_.Controllers
 {
     public class _table_Controller : BaseController
     {
+        private _table_ _routeFilter;
+        public _table_ RouteFilter
+        {
+            get
+            {
+                if (_routeFilter != null)
+                {
+                    return _routeFilter;
+                }
+
+                var ui_route_filter = (RouteData.Values["ui_route_filter"] ?? Request.QueryString["ui_route_filter"]) as string;
+                if (!string.IsNullOrEmpty(ui_route_filter))
+                {
+                    try
+                    {
+                        var bytes = Convert.FromBase64String(ui_route_filter);
+                        ui_route_filter = System.Text.Encoding.ASCII.GetString(bytes);
+
+                        var filter = JsonConvert.DeserializeObject<_table_ViewModel>(ui_route_filter).ToModel();
+
+                        _routeFilter = filter;
+
+                        return filter;
+                    }
+                    catch
+                    {
+                        return null;
+                    }
+                }
+
+                return null;
+            }
+        }
+
         public List<_table_ViewModel> GetList()
         {
             db.Configuration.ProxyCreationEnabled = false;
             var data = db._table__include_.AsQueryable();
 
             var ui_route_filter = (RouteData.Values["ui_route_filter"] ?? Request.QueryString["ui_route_filter"]) as string;
-            if (!string.IsNullOrEmpty(ui_route_filter))
+            var filter = RouteFilter;
+
+            if (filter != null)
             {
-                try
-                {
-                    var bytes = Convert.FromBase64String(ui_route_filter);
-                    ui_route_filter = System.Text.Encoding.ASCII.GetString(bytes);
-
-                    var filter = JsonConvert.DeserializeObject<_table_ViewModel>(ui_route_filter).ToModel();
-
-                    _filterconditions_                        
-                }
-                catch
-                {
-
-                }
+                _filterconditions_                        
             }
 
-            return data.ToList().Select(x => new _table_ViewModel(x, true)).ToList();
+            var results = data.ToList().Select(x => new _table_ViewModel(x, true)).ToList();
+
+            return results;
         }
 
         public _table_ Get(_pktype_ id)
@@ -99,7 +125,7 @@ namespace _namespace_.Controllers
 
         public ActionResult New()
         {
-            var vm = new _table_ViewModel() { _defaults_ };
+            var vm = RouteFilter != null ? new _table_ViewModel(RouteFilter) : new _table_ViewModel() { _defaults_ };
                        
             ViewBag.Lookups = GetLookups();
             return PartialView(vm);

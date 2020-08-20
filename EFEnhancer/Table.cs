@@ -14,6 +14,19 @@ namespace EFEnhancer
     {
         public Type Type { get; set; }
         public string Name { get; set; }
+
+        public string DisplayName
+        {
+            get
+            {
+                var dn = Name.Any(char.IsUpper) ? Regex.Replace(Name, "([a-z])([A-Z])", "$1 $2") : Name;
+                if(dn.Contains('_'))
+                {
+                    dn = dn.Substring(dn.IndexOf('_') + 1);
+                }
+                return dn;
+            }
+        }
         public List<Column> Columns { get; set; }
         public Dictionary<Column, Table> ForeignKeys { get; set; }
 
@@ -79,7 +92,12 @@ namespace EFEnhancer
             {
                 get
                 {
-                    return Name.Any(char.IsUpper) ? Regex.Replace(Name, "([a-z])([A-Z])", "$1 $2") : Name;
+                    var d = Name.Any(char.IsUpper) ? Regex.Replace(Name, "([a-z])([A-Z])", "$1 $2") : Name;
+
+                    if (d.EndsWith(" ID"))
+                        d = d.Substring(0, d.Length - 3);
+
+                    return d;
                 }
             }
 

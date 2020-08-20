@@ -1,7 +1,7 @@
 ﻿<div class="form-group row">
     @Html.LabelFor(model => model._column_, htmlAttributes: new { @class = "control-label col-md-2" })
     <div class="col-md-10">
-        @Html.DropDownList("_column_", lookups["_column_"] as IEnumerable<SelectListItem>, htmlAttributes: new { @class = "form-control" })
+        @Html.DropDownList("_column_", (lookups["_column_"] as IEnumerable<SelectListItem>).Prepend(new SelectListItem { Text = "-", Value = "" }), htmlAttributes: new { @class = "form-control" })
         @Html.ValidationMessageFor(model => model._column_, "", new { @class = "text-danger" })
     </div>
 </div>

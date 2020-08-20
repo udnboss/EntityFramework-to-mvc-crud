@@ -28,6 +28,7 @@ namespace EFEnhancer
             template = template
                     .Replace("_namespace_", Namespace)
                     .Replace("_table_", Table.Name)
+                    .Replace("_tablename_", Table.DisplayName)
                     .Replace("_theadColumns_", GetTheadColumns())
                     .Replace("_tbodyColumns_", GetTbodyColumns())
                     .Replace("_detailFields_", GetFormDetail(template_name))
@@ -67,7 +68,7 @@ namespace EFEnhancer
             var tabs = new List<string>();
             foreach (var d in Table.Dependents)
             {
-                tabs.Add(template.Replace("_childtable_", d.Name));
+                tabs.Add(template.Replace("_childtable_", d.Name).Replace("_childtablename_", d.DisplayName.StartsWith(Table.DisplayName) ? d.DisplayName.Substring(Table.DisplayName.Length).Trim() : d.DisplayName));
             }
 
             return string.Join("\r\n", tabs);
