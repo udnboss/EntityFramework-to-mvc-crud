@@ -42,6 +42,7 @@ namespace EFEnhancer
                 }
             }
 
+            //foreign keys
             foreach(var t in tables)
             {
                 var fks = GetForeignKeyProperties(t.Type);
@@ -56,6 +57,11 @@ namespace EFEnhancer
                 }
             }
             
+            //build dependency graph
+            foreach(var t in tables)
+            {
+                t.Dependents.AddRange(tables.Where(x => x != t && x.ForeignKeys.Any(f => f.Value == t)).ToList());
+            }
 
             return tables;
         }

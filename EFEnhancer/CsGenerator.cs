@@ -31,6 +31,7 @@ namespace EFEnhancer
             var properties = this.GetProperties();
             var copy = this.GetCopyProperties();
             var tomodel = this.GetToModelProperties();
+            var filterconditions = this.GetFilterConditions();
 
             var template = File.ReadAllText(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "templates\\" + templateName));
 
@@ -40,15 +41,25 @@ namespace EFEnhancer
                             .Replace("_table_", Table.Name)
                             .Replace("_include_", include)
                             .Replace("_pktype_", pktype)
+                            .Replace("_nullablepktype_", pktype == "String" ? pktype : pktype + "?")
                             .Replace("_setnewguid_", pktype == "Guid" ? "m.ID = Guid.NewGuid(); " : "")
                             .Replace("_pkname_", pkname)
                             .Replace("_lookups_", lookups)
                             .Replace("_defaults_", defaults)
                             .Replace("_properties_", properties)
                             .Replace("_copyproperties_", copy)
-                            .Replace("_tomodelproperties_", tomodel);
+                            .Replace("_tomodelproperties_", tomodel)
+                            .Replace("_filterconditions_", filterconditions)
+                            .Replace("_primitivecols_", string.Join(", ", Table.PrimitiveColumns.Select(x => x.Name)))
+                            ;
 
             return template;
+        }
+
+        private string GetFilterConditions()
+        {
+            var filterconditions = Table.PrimitiveColumns.Select(x => string.Format("if (filter.{0} != null && filter.{0}.ToString() != \"00000000-0000-0000-0000-000000000000\") data = data.Where(x => x.{0} == filter.{0});", x.Name)).ToList();
+            return string.Join("\r\n\t\t\t\t\t", filterconditions);
         }
 
         private string GetInclude()

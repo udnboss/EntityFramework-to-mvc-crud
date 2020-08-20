@@ -1,0 +1,88 @@
+﻿@using _namespace_.ViewModels
+@model IEnumerable<_table_ViewModel>
+    @{
+        var controller = ViewContext.RouteData.Values["controller"].ToString();
+
+        var ui_html_target = (ViewContext.RouteData.Values["ui_html_target"] ?? Request.QueryString["ui_html_target"]) as string;
+        var ui_list_view = (ViewContext.RouteData.Values["ui_list_view"] ?? Request.QueryString["ui_list_view"]) as string;
+        var ui_modal_id = Guid.NewGuid().ToString();
+        var ui_tab_id = (ViewContext.RouteData.Values["ui_tab_id"] ?? Request.QueryString["ui_tab_id"]) as string;
+        var ui_route_filter = (ViewContext.RouteData.Values["ui_route_filter"] ?? Request.QueryString["ui_route_filter"]) as string;
+
+        var ui_form_id = Guid.NewGuid().ToString();
+
+        var modalId = Guid.NewGuid().ToString();
+
+        var currentId = ViewBag.CurrentID as object;
+        var currentItem = currentId == null ? Model.FirstOrDefault() : Model.FirstOrDefault(x => x.ID.ToString() == currentId.ToString());
+    }
+
+    <div>
+        <div class="text-right mb-5">
+            @Ajax.ActionLink(
+            linkText: "Add New _table_..",
+            actionName: "New",
+            controllerName: controller,
+            routeValues: new { ui_html_target, ui_list_view, ui_modal_id, ui_tab_id, ui_route_filter },
+            ajaxOptions: new AjaxOptions
+            {
+                HttpMethod = "GET",
+                OnBegin = "show_modal('" + ui_modal_id + "')",
+                OnSuccess = "",
+                Confirm = null,
+                AllowCache = false,
+                InsertionMode = InsertionMode.Replace,
+                OnFailure = "show_error",
+                OnComplete = "modal_loading(false)",
+                UpdateTargetId = ui_modal_id + "_body"
+            },
+            htmlAttributes: new
+            {
+                @class = "btn btn-outline-primary btn-sm"
+            })
+        </div>
+
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            View
+                        </th>
+                        _theadColumns_
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr class="@(currentItem != null && item._pkname_ == currentItem._pkname_ ? "bg-info" : "")">
+                            <td>
+                                @Ajax.ActionLink(
+                                    linkText: "View",
+                                    actionName: "Details",
+                                    controllerName: controller,
+                                    routeValues: new { id = item.ID, ui_html_target, ui_list_view, ui_modal_id, ui_tab_id, ui_route_filter },
+                                    ajaxOptions: new AjaxOptions
+                                    {
+                                        HttpMethod = "GET",
+                                        OnBegin = "show_modal('" + ui_modal_id + "')",
+                                        OnSuccess = "",
+                                        Confirm = null,
+                                        AllowCache = false,
+                                        InsertionMode = InsertionMode.Replace,
+                                        OnFailure = "show_error",
+                                        OnComplete = "modal_loading(false)",
+                                        UpdateTargetId = ui_modal_id + "_body"
+                                    },
+                                    htmlAttributes: new
+                                    {
+                                        @class = "btn btn-outline-primary btn-sm"
+                                    })
+                            </td>
+                            _tbodyColumns_
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>

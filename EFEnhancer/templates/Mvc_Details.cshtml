@@ -1,14 +1,20 @@
-﻿@model _namespace_.ViewModels._table_ViewModel
+﻿@using _namespace_.ViewModels
+@model _table_ViewModel
 
 @{
-    var html_target = (ViewContext.RouteData.Values["html_target"] ?? Request.QueryString["html_target"]) as string;
     var controller = ViewContext.RouteData.Values["controller"].ToString();
-    var modalId = ViewContext.RouteData.Values["modal_id"] ?? Request.QueryString["modal_id"] as string;
-    var formId = Guid.NewGuid().ToString();
+
+    var ui_html_target = (ViewContext.RouteData.Values["ui_html_target"] ?? Request.QueryString["ui_html_target"]) as string;
+    var ui_list_view = (ViewContext.RouteData.Values["ui_list_view"] ?? Request.QueryString["ui_list_view"]) as string;
+    var ui_modal_id = (ViewContext.RouteData.Values["ui_modal_id"] ?? Request.QueryString["ui_modal_id"]) as string;
+    var ui_tab_id = (ViewContext.RouteData.Values["ui_tab_id"] ?? Request.QueryString["ui_tab_id"]) as string;
+    var ui_route_filter = (ViewContext.RouteData.Values["ui_route_filter"] ?? Request.QueryString["ui_route_filter"]) as string;
+
+    var ui_form_id = Guid.NewGuid().ToString();
 }
 
 <div>
-    <h4>T_Comment</h4>
+    <h4>@Model._displaycolumn_</h4>
     <hr />
     <div>
         _detailFields_
@@ -24,18 +30,18 @@
     linkText: "Edit",
     actionName: "Edit",
     controllerName: controller,
-    routeValues: new { id = Model.ID, modal_id = modalId, html_target = html_target },
+    routeValues: new { id = Model.ID, ui_html_target, ui_list_view, ui_modal_id, ui_tab_id, ui_route_filter },
     ajaxOptions: new AjaxOptions
     {
         HttpMethod = "GET",
-        OnBegin = "modal_loading(true)",
+        OnBegin = "modal_loading(true);" + "show_modal('" + ui_modal_id + "');",
         OnSuccess = "",
         Confirm = null,
         AllowCache = false,
         InsertionMode = InsertionMode.Replace,
         OnFailure = "show_error",
         OnComplete = "modal_loading(false)",
-        UpdateTargetId = modalId + "_body"
+        UpdateTargetId = ui_modal_id + "_body"
     },
     htmlAttributes: new
     {
@@ -45,7 +51,7 @@
     @using (Ajax.BeginForm(
         actionName: "Delete",
         controllerName: controller,
-        routeValues: new { id = Model.ID, modal_id = modalId, html_target = html_target },
+        routeValues: new { id = Model.ID, ui_html_target, ui_list_view, ui_modal_id, ui_tab_id, ui_route_filter },
         ajaxOptions: new AjaxOptions
         {
             HttpMethod = "POST",
@@ -56,17 +62,17 @@
             InsertionMode = InsertionMode.Replace,
             OnFailure = "show_error",
             OnComplete = "modal_loading(false)",
-            UpdateTargetId = html_target
+            UpdateTargetId = ui_html_target
         },
         htmlAttributes: new
         {
             @class = "d-inline form-inline",
-            id = formId
+            id = ui_form_id
         }))
-        {
-            @Html.AntiForgeryToken()
-            <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Confirm delete?')">Delete</button>
-        }
+    {
+        @Html.AntiForgeryToken()
+        <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Confirm delete?')">Delete</button>
+    }
 
     </div>
 </div>

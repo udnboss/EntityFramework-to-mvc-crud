@@ -17,6 +17,7 @@ namespace EFEnhancer
         public List<Column> Columns { get; set; }
         public Dictionary<Column, Table> ForeignKeys { get; set; }
 
+        public List<Table> Dependents { get; set; }
         public Column DisplayColumn
         {
             get
@@ -39,8 +40,14 @@ namespace EFEnhancer
         {
             Columns = new List<Column>();
             ForeignKeys = new Dictionary<Column, Table>();
+            Dependents = new List<Table>();
         }
-      
+
+        public override string ToString()
+        {
+            return Name;
+        }
+
         public class Column
         {
             public Type Type { get; set; }
@@ -95,6 +102,11 @@ namespace EFEnhancer
                     Convert.GetTypeCode(type) != TypeCode.Object ||
                     (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>) && IsSimpleType(type.GetGenericArguments()[0]))
                     ;               
+            }
+
+            public override string ToString()
+            {
+                return Name;
             }
         }
     }

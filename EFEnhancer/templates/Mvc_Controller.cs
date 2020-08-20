@@ -18,8 +18,27 @@ namespace _namespace_.Controllers
         public List<_table_ViewModel> GetList()
         {
             db.Configuration.ProxyCreationEnabled = false;
-            var data = db._table__include_.ToList().Select(x => new _table_ViewModel(x, true)).ToList();
-            return data;
+            var data = db._table__include_.AsQueryable();
+
+            var ui_route_filter = (RouteData.Values["ui_route_filter"] ?? Request.QueryString["ui_route_filter"]) as string;
+            if (!string.IsNullOrEmpty(ui_route_filter))
+            {
+                try
+                {
+                    var bytes = Convert.FromBase64String(ui_route_filter);
+                    ui_route_filter = System.Text.Encoding.ASCII.GetString(bytes);
+
+                    var filter = JsonConvert.DeserializeObject<_table_ViewModel>(ui_route_filter).ToModel();
+
+                    _filterconditions_                        
+                }
+                catch
+                {
+
+                }
+            }
+
+            return data.ToList().Select(x => new _table_ViewModel(x, true)).ToList();
         }
 
         public _table_ Get(_pktype_ id)
@@ -35,9 +54,29 @@ namespace _namespace_.Controllers
             };
         }
 
-        public ActionResult Index()
+        public ActionResult Index(_nullablepktype_ id = null)
         {
-            return PartialView(GetList());            
+            return View(id);
+        }
+
+        public ActionResult ListDetail(_nullablepktype_ id = null)
+        {
+            ViewBag.CurrentID = id;
+            return PartialView(GetList());
+        }
+
+        public ActionResult ListTable(_nullablepktype_ id = null)
+        {
+            ViewBag.CurrentID = id;
+            return PartialView(GetList());
+        }
+
+        public ActionResult List(_nullablepktype_ id = null)
+        {
+            ViewBag.CurrentID = id;
+            var ui_list_view = (RouteData.Values["ui_list_view"] ?? Request.QueryString["ui_list_view"]) as string;
+
+            return PartialView(ui_list_view ?? "ListTableView", GetList());
         }
 
         public ActionResult Details(_pktype_ id)
@@ -49,7 +88,8 @@ namespace _namespace_.Controllers
             var m = Get(id);
             if (m == null)
             {
-                return HttpNotFound();
+                Response.StatusCode = HttpStatusCode.NotFound.GetHashCode();
+                return Json(new string[] { "Item not found." });
             }
 
             var vm = new _table_ViewModel(m, true);
@@ -74,7 +114,8 @@ namespace _namespace_.Controllers
             var m = Get(id);
             if (m == null)
             {
-                return HttpNotFound();
+                Response.StatusCode = HttpStatusCode.NotFound.GetHashCode();
+                return Json(new string[] { "Item not found." });
             }
 
             var vm = new _table_ViewModel(m);
@@ -93,7 +134,7 @@ namespace _namespace_.Controllers
                 _setnewguid_
                 db._table_.Add(m);
                 db.SaveChanges();
-                return PartialView("Index", GetList());
+                return List(m._pkname_);
             }
 
             var errors = ModelState.SelectMany(x => x.Value.Errors)
@@ -114,7 +155,7 @@ namespace _namespace_.Controllers
                 var m = vm.ToModel();
                 db.Entry(m).State = EntityState.Modified;
                 db.SaveChanges();
-                return PartialView("Index", GetList());
+                return List(m._pkname_);
             }
 
             var errors = ModelState.SelectMany(x => x.Value.Errors)
@@ -135,13 +176,14 @@ namespace _namespace_.Controllers
                 var em = Get(vm.ID);
                 if (em == null)
                 {
-                    return HttpNotFound();
+                    Response.StatusCode = HttpStatusCode.NotFound.GetHashCode();
+                    return Json(new string[] { "Item not found." });
                 }
 
                 db._table_.Remove(em);
                 db.SaveChanges();
 
-                return PartialView("Index", GetList());
+                return List(null);
             }
 
             var errors = ModelState.SelectMany(x => x.Value.Errors)

@@ -99,7 +99,7 @@ namespace EFEnhancer
             var controllerType = "Mvc";
             var csTemplate = controllerType + "_Controller.cs";
             var vmTemplate = controllerType + "_ViewModel.cs";
-            var cshtmlInclude = "Index,Details,New,Edit".Split(',').Select(x => controllerType + "_" + x + ".cshtml");
+            var cshtmlInclude = "Index,Details,New,Edit,ListDetail,ListTable".Split(',').Select(x => controllerType + "_" + x + ".cshtml");
 
             var _namespace = "WorkflowWeb";
 

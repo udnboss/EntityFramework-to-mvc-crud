@@ -36,6 +36,14 @@ namespace _namespace_.ViewModels
             return m;
         }
 
+        public string ToRouteFilter()
+        {
+            var route_filter = JsonConvert.SerializeObject(new { _primitivecols_ });
+            var bytes = System.Text.Encoding.ASCII.GetBytes(route_filter);
+            route_filter = Convert.ToBase64String(bytes);
+            return route_filter;
+        }
+
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if (ID == null)

@@ -24,17 +24,53 @@ namespace EFEnhancer
         public string GenerateCode(string templateName)
         {
             var template = File.ReadAllText(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "templates\\" + templateName));
-
+            var template_name = templateName.Split('_')[0];
             template = template
                     .Replace("_namespace_", Namespace)
                     .Replace("_table_", Table.Name)
                     .Replace("_theadColumns_", GetTheadColumns())
                     .Replace("_tbodyColumns_", GetTbodyColumns())
-                    .Replace("_detailFields_", GetFormDetail(templateName.Split('_')[0]))
-                    .Replace("_editFields_", GetFormFields(templateName.Split('_')[0]))
-                    .Replace("_newFields_", GetFormFields(templateName.Split('_')[0]));
+                    .Replace("_detailFields_", GetFormDetail(template_name))
+                    .Replace("_editFields_", GetFormFields(template_name))
+                    .Replace("_newFields_", GetFormFields(template_name))
+                    .Replace("_displaycolumn_", Table.DisplayColumn.Name)
+                    .Replace("_tabitems_", GetTabItems(template_name))
+                    .Replace("_tabpanes_", GetTabPanes(template_name))
+                    .Replace("_pkname_", Table.Columns[0].Name)
+                    ;
 
             return template;
+        }
+
+        private string GetTabPanes(string templateName)
+        {
+            var template = File.ReadAllText(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "templates\\" + templateName + "_TabPane.cshtml"));
+            template = template.Replace("_table_", Table.Name);
+
+            var tabs = new List<string>();
+            foreach (var d in Table.Dependents)
+            {
+                tabs.Add(template.Replace("_childtable_", d.Name)
+                    .Replace("_pkname_", Table.Columns[0].Name)
+                    .Replace("_childfkcolname_", d.ForeignKeys.First(x => x.Value == Table).Key.Name)
+                    );
+            }
+
+            return string.Join("\r\n", tabs);
+        }
+
+        private string GetTabItems(string templateName)
+        {
+            var template = File.ReadAllText(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "templates\\" + templateName + "_TabItem.cshtml"));
+            template = template.Replace("_table_", Table.Name);
+
+            var tabs = new List<string>();
+            foreach (var d in Table.Dependents)
+            {
+                tabs.Add(template.Replace("_childtable_", d.Name));
+            }
+
+            return string.Join("\r\n", tabs);
         }
 
         string GetTheadColumns()
