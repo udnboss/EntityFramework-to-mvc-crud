@@ -8,6 +8,7 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static EFEnhancer.Table;
 
 namespace EFEnhancer
 {
@@ -63,8 +64,29 @@ namespace EFEnhancer
                 t.Dependents.AddRange(tables.Where(x => x != t && x.ForeignKeys.Any(f => f.Value == t)).ToList());
             }
 
+            //build parents graph (avoid a self-referencing table or else we have trouble.)
+            foreach (var t in tables)
+            {
+                t.Parents = GetParents(t);
+            }
+
+
             return tables;
         }
+
+        private List<TableParentRelation> GetParents(Table t)
+        {
+            var parents = new List<TableParentRelation>();
+            foreach (var p in t.ForeignKeys.Values)
+            {
+                var rel = new TableParentRelation { Table = p };
+                parents.Add(rel);
+                rel.Parents = GetParents(p);
+            }
+
+            return parents;
+        }
+
         private Dictionary<string, Tuple<string, string>> GetForeignKeyProperties(Type DBType)
         {
             EntityType table = GetTableEntityType(DBType);

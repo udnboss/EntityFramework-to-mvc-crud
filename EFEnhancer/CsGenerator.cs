@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -71,6 +72,8 @@ namespace EFEnhancer
 
         private string GetLookups()
         {
+            //var myPaths = GetAllPathsFrom(Table, new List<List<Table>>(), new List<Table>());
+
             var lookupStrs = new List<string>();
             foreach (var lookup in Table.ForeignKeys)
             {
@@ -78,12 +81,65 @@ namespace EFEnhancer
                 var t = lookup.Value;
                 var pk = t.Columns[0];
                 var textCol = t.Columns[1].Name == "Name" ? t.Columns[1] : t.Columns[0];
-                var tmp = string.Format(@"{{""{0}"", db.{1}.Select(x => new  SelectListItem {{ Value = x.{2}.ToString(), Text = x.{3}.ToString() }}) }}", c.Name, t.Name, pk.Name, textCol.Name);
+
+                //var refAllPaths = GetAllPathsFrom(t, new List<List<Table>>(), new List<Table>());
+
+                
+                var filters = new List<string>();
+
+                //filter by routeFilter (restricts to it wrong!)
+                filters.Add(string.Format(".Where(x => routeFilter.{1} == null || x.{0} == routeFilter.{1})", pk, c.Name));
+
+                //filter by common parents
+                foreach (var lookup_fk in t.ForeignKeys)
+                {
+                    var lfk_c = lookup_fk.Key;
+                    var lfk_t = lookup_fk.Value;
+                    var lfk_pk = lfk_t.Columns[0];
+
+                    var myFks = Table.Columns.Where(x => x.ReferenceTable == lfk_t);
+
+                    if (myFks.Count() > 0)
+                    {                        
+                        if (myFks.Count() == 1)
+                        {
+                            var fkname = myFks.First().Name;
+                            filters.Add(string.Format(".Where(x => routeFilter.{2} == null ||  x.{0}.{1} == routeFilter.{2})", lfk_t, lfk_pk, fkname));
+                        }
+                        else
+                        {
+                            //we have multiple fks to same table..
+                        }
+                    }
+                }
+
+                var joinedFilters = string.Join("", filters);
+
+                var tmp = string.Format(@"{{""{0}"", db.{1}{4}.Select(x => new  SelectListItem {{ Value = x.{2}.ToString(), Text = x.{3}.ToString() }}) }}", c.Name, t.Name, pk.Name, textCol.Name, joinedFilters);
                 lookupStrs.Add(tmp);
             }
 
             return string.Join(",\r\n\t\t\t\t", lookupStrs);
-        }        
+        }
+        
+        private List<List<Table>> GetAllPathsFrom( Table t, List<List<Table>> paths, List<Table> currentPath)
+        {
+            currentPath.Add(t);
+            if(t.Parents.Count == 0)
+            {
+                paths.Add(currentPath);
+            }
+            else
+            {
+                foreach (var p in t.Parents)
+                {                
+                    GetAllPathsFrom(p.Table, paths, currentPath.ToList());
+                }
+            }
+
+            return paths;
+            
+        }
 
         private string GetDefaults()
         {

@@ -56,9 +56,22 @@ namespace EFEnhancer
             Dependents = new List<Table>();
         }
 
+        public List<TableParentRelation> Parents { get; set; }
+
         public override string ToString()
         {
             return Name;
+        }
+
+        public class TableParentRelation
+        {
+            public Table Table { get; set; }
+            public List<TableParentRelation> Parents { get; set; }
+
+            public TableParentRelation() 
+            {
+                Parents = new List<TableParentRelation>();
+            }
         }
 
         public class Column

@@ -11,7 +11,7 @@ using _namespace_.Models;
 
 namespace _namespace_.Business
 {
-    public class _table_Business : BaseBusiness<_table_>
+    public partial class _table_Business : BaseBusiness<_table_>
     {
         public _table_Business() { }
         public _table_Business(DbContext db, string user) : base(db, user) { }
@@ -36,7 +36,12 @@ namespace _namespace_.Business
             return AccessDenied<List<_table_>>(o);
         }
 
-        private IQueryable<_table_> GetIQueryable(_table_ filter)
+        public override IQueryable<_table_> GetIQueryable()
+        {
+            return db._table__include_.AsQueryable();
+        }
+
+        public IQueryable<_table_> GetIQueryable(_table_ filter)
         {
             var data = GetIQueryable();
 

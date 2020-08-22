@@ -10,7 +10,7 @@ using _namespace_.Models;
 
 namespace _namespace_.ViewModels
 {
-    public class _table_ViewModel : BaseViewModel<_table_>, IValidatableObject
+    public partial class _table_ViewModel : BaseViewModel<_table_>, IValidatableObject
     {
         _properties_
 

@@ -14,15 +14,17 @@ using _namespace_.ViewModels;
 
 namespace _namespace_.Controllers
 {
-    public class _table_Controller : BaseController<_table_, _table_Business, _table_ViewModel>
+    public partial class _table_Controller : BaseController<_table_, _table_Business, _table_ViewModel>
     {
         public _table_Controller()
         {
             business = new _table_Business(db, user);
         }
 
-        public override Dictionary<string, object> GetLookups()
+        public Dictionary<string, object> GetLookups()
         {
+            var routeFilter = GetRouteFilter();
+
             return new Dictionary<string, object> {
                 _lookups_
             };
@@ -30,7 +32,7 @@ namespace _namespace_.Controllers
 
         public ActionResult Index(_nullablepktype_ id = null)
         {
-            return View(id);
+            return View((object)id);
         }
 
         public ActionResult List(_nullablepktype_ id = null, string ui_list_view = null)
