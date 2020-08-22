@@ -43,7 +43,29 @@
             <div class="list-group">
                 @foreach (var item in Model)
                 {
-                    <a href="@Url.Action(actionName: "Index", controllerName: controller, routeValues: new { id = item.ID, ui_route_filter })" class="list-group-item list-group-item-action @(currentItem != null && currentItem._pkname_ == item._pkname_ ? "list-group-item-primary" : "")">@item._displaycolumn_</a>
+                    @*<a href="@Url.Action(actionName: "Index", controllerName: controller, routeValues: new { id = item.ID, ui_route_filter })" class="list-group-item list-group-item-action @(currentItem != null && currentItem._pkname_ == item._pkname_ ? "list-group-item-primary" : "")">@item._displaycolumn_</a>*@
+
+                    @Ajax.ActionLink(
+                        linkText: item._displaycolumn_,
+                        actionName: "List",
+                        controllerName: controller,
+                        routeValues: new { id = item.ID, ui_html_target, ui_list_view, ui_modal_id, ui_tab_id, ui_route_filter },
+                        ajaxOptions: new AjaxOptions
+                        {
+                            HttpMethod = "GET",
+                            OnBegin = "",
+                            OnSuccess = "",
+                            Confirm = null,
+                            AllowCache = false,
+                            InsertionMode = InsertionMode.Replace,
+                            OnFailure = "show_error",
+                            OnComplete = "modal_loading(false)",
+                            UpdateTargetId = ui_html_target
+                        },
+                        htmlAttributes: new
+                        {
+                            @class = "list-group-item list-group-item-action" + (currentItem != null && currentItem._pkname_ == item._pkname_ ? " list-group-item-primary" : "")
+                        })
                 }
             </div>
         </div>
