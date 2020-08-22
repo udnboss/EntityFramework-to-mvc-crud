@@ -99,6 +99,7 @@ namespace EFEnhancer
             var controllerType = "Mvc";
             var csTemplate = controllerType + "_Controller.cs";
             var vmTemplate = controllerType + "_ViewModel.cs";
+            var bTemplate = controllerType + "_Business.cs";
             var cshtmlInclude = "Index,Details,New,Edit,ListDetail,ListTable".Split(',').Select(x => controllerType + "_" + x + ".cshtml");
 
             var _namespace = "WorkflowWeb";
@@ -106,6 +107,7 @@ namespace EFEnhancer
             var controllers = new Dictionary<string, string>();
             var views = new List<Tuple<string, string, string>>();
             var viewmodels = new Dictionary<string, string>();
+            var business = new Dictionary<string, string>();
 
             foreach (var table in dbTables)
             {
@@ -114,6 +116,7 @@ namespace EFEnhancer
 
                 controllers.Add(table.Name + "Controller.cs", csGen.GenerateCode(csTemplate));
                 viewmodels.Add(table.Name + "ViewModel.cs", csGen.GenerateCode(vmTemplate));
+                business.Add(table.Name + "Business.cs", csGen.GenerateCode(bTemplate));
 
                 foreach (var templateName in cshtmlInclude)
                 {                    
@@ -128,6 +131,14 @@ namespace EFEnhancer
                 var dir = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "output\\Controllers\\");
                 if (!Directory.Exists(dir)) { Directory.CreateDirectory(dir); }
                 File.WriteAllText(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "output\\Controllers\\" + c.Key), c.Value);
+            }
+
+            //Business
+            foreach (var c in business)
+            {
+                var dir = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "output\\Business\\");
+                if (!Directory.Exists(dir)) { Directory.CreateDirectory(dir); }
+                File.WriteAllText(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "output\\Business\\" + c.Key), c.Value);
             }
 
             //ViewModels

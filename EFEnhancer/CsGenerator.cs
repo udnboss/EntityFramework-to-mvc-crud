@@ -193,11 +193,11 @@ namespace EFEnhancer
                 {
                     if (c.IsCollection)
                     {
-                        props.Add(string.Format("m.{0} = convertSubs ? this.{0}.Select(x => x.ToModel()).ToList() : null;", c.Name, typename));
+                        props.Add(string.Format("m.{0} = convertSubs && this.{0} != null  ? this.{0}.Select(x => x.ToModel()).ToList() : null;", c.Name, typename));
                     }
                     else
                     {
-                        props.Add(string.Format("m.{0} = convertSubs ? this.{0}.ToModel() : null;", c.Name, typename));
+                        props.Add(string.Format("m.{0} = convertSubs && this.{0} != null ?  this.{0}.ToModel() : null;", c.Name, typename));
                     }
                 }
                 else

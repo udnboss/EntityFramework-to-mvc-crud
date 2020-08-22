@@ -10,7 +10,7 @@ using _namespace_.Models;
 
 namespace _namespace_.ViewModels
 {
-    public class _table_ViewModel : IValidatableObject
+    public class _table_ViewModel : BaseViewModel<_table_>, IValidatableObject
     {
         _properties_
 
@@ -27,7 +27,7 @@ namespace _namespace_.ViewModels
             }
         }
 
-        public _table_ ToModel(bool convertSubs = false)
+        public override _table_ ToModel(bool convertSubs = false)
         {
             var m = new _table_();
 
@@ -36,17 +36,20 @@ namespace _namespace_.ViewModels
             return m;
         }
 
-        public string ToRouteFilter()
+        public override BaseViewModel<_table_> FromModel<M>(M mo, bool convertSubs)
         {
-            var route_filter = JsonConvert.SerializeObject(new { _primitivecols_ });
-            var bytes = System.Text.Encoding.ASCII.GetBytes(route_filter);
-            route_filter = Convert.ToBase64String(bytes);
-            return route_filter;
+            var m = mo as _table_;
+            if (m != null)
+            {
+                _copyproperties_
+            }
+
+            return this;
         }
 
-        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        public override IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (ID == null)
+            if (_pkname_ == null)
             {
                 yield return new ValidationResult("Error", new string[] { "Error Detail" });
             }

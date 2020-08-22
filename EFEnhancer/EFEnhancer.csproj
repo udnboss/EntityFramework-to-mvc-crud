@@ -153,6 +153,9 @@
     <None Include="templates\Mvc_ViewModel.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="templates\Mvc_Business.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <Compile Include="TIMS_Contractor.cs">
       <DependentUpon>Model2.tt</DependentUpon>
     </Compile>

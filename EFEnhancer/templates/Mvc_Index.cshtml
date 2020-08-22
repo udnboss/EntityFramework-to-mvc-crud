@@ -7,5 +7,5 @@
 }
 
 <div id="@ui_html_target">
-    @Html.Action(actionName: ui_list_view, controllerName: controller, routeValues: new { id = Model, ui_html_target, ui_list_view, ui_route_filter })
+    @Html.Action(actionName: "List", controllerName: controller, routeValues: new { id = Model, ui_html_target, ui_list_view, ui_route_filter })
 </div>
