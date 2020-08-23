@@ -97,7 +97,7 @@ namespace EFEnhancer
                     if (c.IsForeignKey)
                     {
 
-                        name = c.ReferenceTable.Name + "." + c.ReferenceTable.DisplayColumn.Name;
+                        name = c.NavigationProperty.Name + "." + c.ReferenceTable.DisplayColumn.Name;
                     }
 
                     tds.Add(string.Format(template, c.Name, name));
@@ -155,7 +155,7 @@ namespace EFEnhancer
                     var name = c.Name;
                     if (c.IsForeignKey)
                     {
-                        name = c.ReferenceTable.Name + "." + c.ReferenceTable.DisplayColumn.Name;                        
+                        name = c.NavigationProperty.Name + "." + c.ReferenceTable.DisplayColumn.Name;                        
                     }
                     fields.Add(template.Replace("_column_", c.Name).Replace("_refcolumn_", name).Replace("\r\n", "\r\n\t\t"));
                 }

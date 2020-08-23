@@ -33,7 +33,7 @@ namespace EFEnhancer
             var copy = this.GetCopyProperties();
             var tomodel = this.GetToModelProperties();
             var filterconditions = this.GetFilterConditions();
-
+            var uniquevalidations = this.GetUniqueValidations();
             var template = File.ReadAllText(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "templates\\" + templateName));
 
             template = template
@@ -52,9 +52,41 @@ namespace EFEnhancer
                             .Replace("_tomodelproperties_", tomodel)
                             .Replace("_filterconditions_", filterconditions)
                             .Replace("_primitivecols_", string.Join(", ", Table.PrimitiveColumns.Select(x => x.Name)))
+                            .Replace("_uniquevalidations_", uniquevalidations)
+
                             ;
 
             return template;
+        }
+
+        private string GetUniqueValidations()
+        {
+            var output = new List<string>();
+
+            var template = @"
+                //unique check for {0} related properties	
+			    if(!IsUniqueList(new List<object> {{ {1} }}))
+                {{
+				    errors.Add(new ValidationResult(""{2} fields must be different."", null));
+
+                }}
+                ";
+            
+            var groups = Table.Parents.GroupBy(x => x.Table).Where(x => x.Count() > 1).ToList();
+
+            foreach(var g in groups)
+            {
+                var cols = Table.Columns.Where(c => c.ReferenceTable == g.Key);
+                var str = string.Format(template,
+                    g.Key.Name,
+                    string.Join(", ", cols.Select(c => c.Name)),
+                    string.Join(", ", cols.Select(c => c.DisplayName))
+                    );
+                output.Add(str);
+            }
+
+            return string.Join("\r\n", output);
+
         }
 
         private string GetFilterConditions()

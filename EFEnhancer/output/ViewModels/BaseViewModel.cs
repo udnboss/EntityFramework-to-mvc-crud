@@ -44,5 +44,18 @@ namespace WorkflowWeb.ViewModels
                 yield return new ValidationResult("Error", new string[] { "Error Detail" });
             }
         }
+
+        protected virtual bool IsUniqueList(List<object> items)
+        {
+            //unique check for TIMS_ProjectPackage related properties            
+            var nonNullItems = items.Where(x => x != null);
+            var uniqueItemsCount = nonNullItems.Distinct().Count();
+            if (nonNullItems.Count() != uniqueItemsCount)
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }

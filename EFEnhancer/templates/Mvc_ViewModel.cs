@@ -49,10 +49,11 @@ namespace _namespace_.ViewModels
 
         public override IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (_pkname_ == null)
-            {
-                yield return new ValidationResult("Error", new string[] { "Error Detail" });
-            }
+            var errors = new List<ValidationResult>();
+
+            _uniquevalidations_
+
+            return errors.AsEnumerable();
         }
     }
 
