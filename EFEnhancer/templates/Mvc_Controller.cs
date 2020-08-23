@@ -65,7 +65,17 @@ namespace _namespace_.Controllers
             return Json(new string[] { message });
         }
 
-        public ActionResult Details(_pktype_ id)
+        public ActionResult DetailsWithBar(_pktype_ id, bool partial = true)
+        {
+            return Details(id, partial);
+        }
+
+        public ActionResult DetailsWithTabs(_pktype_ id, bool partial = true)
+        {
+            return Details(id, partial);
+
+        }
+        public ActionResult Details(_pktype_ id, bool partial = true)
         {
             string message;
 
@@ -86,7 +96,7 @@ namespace _namespace_.Controllers
                 {
                     var m = r.Data;
                     var vm = new _table_ViewModel(m, true);
-                    return PartialView(vm);
+                    return partial ? PartialView(vm) as ActionResult : View(vm);
                 }
             }
 

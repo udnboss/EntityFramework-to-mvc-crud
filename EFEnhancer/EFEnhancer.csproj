@@ -111,10 +111,22 @@
     <None Include="Model2.edmx.diagram">
       <DependentUpon>Model2.edmx</DependentUpon>
     </None>
+    <None Include="templates\Mvc_DetailsWithTabs.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="templates\Mvc_DetailsWithBar.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="templates\Mvc_Details.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="templates\Mvc_Edit.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="templates\Mvc_PillPane.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="templates\Mvc_PillItem.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="templates\Mvc_TabPane.cshtml">

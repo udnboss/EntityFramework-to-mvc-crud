@@ -1,4 +1,5 @@
 ﻿@using _namespace_.ViewModels
+@using _namespace_.Models
 @model IEnumerable<_table_ViewModel>
     @{
         var controller = ViewContext.RouteData.Values["controller"].ToString();
@@ -15,6 +16,7 @@
 
         var currentId = ViewBag.CurrentID as object;
         var currentItem = currentId == null ? Model.FirstOrDefault() : Model.FirstOrDefault(x => x.ID.ToString() == currentId.ToString());
+        var currentRouteFilter = ViewBag.RouteFilter as _table_;
     }
 
     <div>

@@ -16,16 +16,7 @@
 <div>
     <h4>@Model._displaycolumn_</h4>
     <hr />
-    <div>
-        _detailFields_
-    </div>
-</div>
-
-<div class="form-group row">
-    <div class="col-md-2">
-
-    </div>
-    <div class="col-md-10">
+    <div class="text-right">
         @Ajax.ActionLink(
     linkText: "Edit",
     actionName: "Edit",
@@ -48,31 +39,33 @@
         @class = "btn btn-primary btn-sm"
     })
 
-    @using (Ajax.BeginForm(
-        actionName: "Delete",
-        controllerName: controller,
-        routeValues: new { id = Model.ID, ui_html_target, ui_list_view, ui_modal_id, ui_tab_id, ui_route_filter },
-        ajaxOptions: new AjaxOptions
+        @using (Ajax.BeginForm(
+            actionName: "Delete",
+            controllerName: controller,
+            routeValues: new { id = Model.ID, ui_html_target, ui_list_view, ui_modal_id, ui_tab_id, ui_route_filter },
+            ajaxOptions: new AjaxOptions
+            {
+                HttpMethod = "POST",
+                OnBegin = "modal_loading(true)",
+                OnSuccess = "hide_modal(this)",
+                Confirm = null,
+                AllowCache = false,
+                InsertionMode = InsertionMode.Replace,
+                OnFailure = "show_error",
+                OnComplete = "modal_loading(false)",
+                UpdateTargetId = ui_html_target
+            },
+            htmlAttributes: new
+            {
+                @class = "d-inline form-inline",
+                id = ui_form_id
+            }))
         {
-            HttpMethod = "POST",
-            OnBegin = "modal_loading(true)",
-            OnSuccess = "hide_modal(this)",
-            Confirm = null,
-            AllowCache = false,
-            InsertionMode = InsertionMode.Replace,
-            OnFailure = "show_error",
-            OnComplete = "modal_loading(false)",
-            UpdateTargetId = ui_html_target
-        },
-        htmlAttributes: new
-        {
-            @class = "d-inline form-inline",
-            id = ui_form_id
-        }))
-    {
-        @Html.AntiForgeryToken()
-        <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Confirm delete?')">Delete</button>
-    }
-
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Confirm delete?')">Delete</button>
+        }
+    </div>
+    <div>
+        _detailFields_
     </div>
 </div>

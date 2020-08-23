@@ -35,17 +35,22 @@ namespace EFEnhancer
                     .Replace("_editFields_", GetFormFields(template_name))
                     .Replace("_newFields_", GetFormFields(template_name))
                     .Replace("_displaycolumn_", Table.DisplayColumn.Name)
+
                     .Replace("_tabitems_", GetTabItems(template_name))
                     .Replace("_tabpanes_", GetTabPanes(template_name))
+
+                    .Replace("_pillitems_", GetTabItems(template_name, "Pill"))
+                    .Replace("_pillpanes_", GetTabPanes(template_name, "Pill"))
+
                     .Replace("_pkname_", Table.Columns[0].Name)
                     ;
 
             return template;
         }
 
-        private string GetTabPanes(string templateName)
+        private string GetTabPanes(string templateName, string type = "Tab")
         {
-            var template = File.ReadAllText(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "templates\\" + templateName + "_TabPane.cshtml"));
+            var template = File.ReadAllText(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "templates\\" + templateName + "_" + type + "Pane.cshtml"));
             template = template.Replace("_table_", Table.Name);
 
             var tabs = new List<string>();
@@ -60,9 +65,9 @@ namespace EFEnhancer
             return string.Join("\r\n", tabs);
         }
 
-        private string GetTabItems(string templateName)
+        private string GetTabItems(string templateName, string type = "Tab")
         {
-            var template = File.ReadAllText(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "templates\\" + templateName + "_TabItem.cshtml"));
+            var template = File.ReadAllText(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "templates\\" + templateName + "_" + type + "Item.cshtml"));
             template = template.Replace("_table_", Table.Name);
 
             var tabs = new List<string>();
@@ -76,13 +81,13 @@ namespace EFEnhancer
 
         string GetTheadColumns()
         {
-            var ths = Table.PrimitiveColumns.Where(x => x.Name != "ID").Select(x => string.Format("<th>@Html.DisplayNameFor(m => m.{0})</th>", x.Name)).ToList();
-            return string.Join("\r\n\t\t\t\t\t", ths);
+            var ths = Table.PrimitiveColumns.Where(x => x.Name != "ID").Select(x => string.Format("@if (currentRouteFilter.{0} == null) {{ <th>@Html.DisplayNameFor(m => m.{0})</th> }}", x.Name)).ToList();
+            return string.Join("\r\n\t\t\t\t\t\t", ths);
         }
 
         string GetTbodyColumns()
         {
-            var template = "<td>@Html.DisplayFor(modelItem => item.{0})</td>";
+            var template = "@if (currentRouteFilter.{0} == null) {{ <td>@Html.DisplayFor(modelItem => item.{1})</td> }}";
             var tds = new List<string>();
             foreach(var c in Table.Columns.Where(x => x.Name != "ID"))
             {
@@ -95,7 +100,7 @@ namespace EFEnhancer
                         name = c.ReferenceTable.Name + "." + c.ReferenceTable.DisplayColumn.Name;
                     }
 
-                    tds.Add(string.Format(template, name));
+                    tds.Add(string.Format(template, c.Name, name));
                 }
             }
             

@@ -72,7 +72,9 @@ namespace EFEnhancer
 
         private string GetLookups()
         {
-            //var myPaths = GetAllPathsFrom(Table, new List<List<Table>>(), new List<Table>());
+            var myPaths = GetAllPathsFrom(Table, new List<List<Table>>(), new List<Table>());
+
+            var myRefs = Table.ForeignKeys.Select(x => x.Value).Distinct().ToList();
 
             var lookupStrs = new List<string>();
             foreach (var lookup in Table.ForeignKeys)
@@ -82,37 +84,69 @@ namespace EFEnhancer
                 var pk = t.Columns[0];
                 var textCol = t.Columns[1].Name == "Name" ? t.Columns[1] : t.Columns[0];
 
-                //var refAllPaths = GetAllPathsFrom(t, new List<List<Table>>(), new List<Table>());
-
-                
                 var filters = new List<string>();
 
-                //filter by routeFilter (restricts to it wrong!)
+                //filter by routeFilter (restricts to it)
                 filters.Add(string.Format(".Where(x => routeFilter.{1} == null || x.{0} == routeFilter.{1})", pk, c.Name));
 
                 //filter by common parents
-                foreach (var lookup_fk in t.ForeignKeys)
+                var refAllPaths = GetAllPathsFrom(t, new List<List<Table>>(), new List<Table>());
+                var refTargets = refAllPaths.Where(x => myRefs.Contains(x.Last())).ToList();
+
+                if (refTargets.Count > 1)
                 {
-                    var lfk_c = lookup_fk.Key;
-                    var lfk_t = lookup_fk.Value;
-                    var lfk_pk = lfk_t.Columns[0];
+                    var refCommonTargets = new List<List<Table>>();
+                    var codes = new List<string>();
+                    foreach (var ct in refTargets)
+                    {
+                        if (ct.Count < 3)
+                            continue;
 
-                    var myFks = Table.Columns.Where(x => x.ReferenceTable == lfk_t);
-
-                    if (myFks.Count() > 0)
-                    {                        
-                        if (myFks.Count() == 1)
+                        var code = string.Join("-", ct.Select(x => x.GetHashCode().ToString()));
+                        if (!codes.Contains(code))
                         {
-                            var fkname = myFks.First().Name;
-                            filters.Add(string.Format(".Where(x => routeFilter.{2} == null ||  x.{0}.{1} == routeFilter.{2})", lfk_t, lfk_pk, fkname));
-                        }
-                        else
-                        {
-                            //we have multiple fks to same table..
+                            refCommonTargets.Add(ct);
+                            codes.Add(code);
                         }
                     }
-                }
 
+                    if(refCommonTargets.Count > 0)
+                    {
+                        refCommonTargets.Sort((a, b) => a.Count - b.Count);
+
+                        var commonRefTablePath = refCommonTargets.First();
+                        //commonRefTablePath.RemoveAt(0);
+                        //commonRefTablePath.RemoveAt(commonRefTablePath.Count - 1);
+
+                        var strBuild = new List<string>() { "x" };
+
+                        for(int i = 0; i < commonRefTablePath.Count - 1; i++)
+                        {
+                            var ctpe = commonRefTablePath[i];
+                            var fk = ctpe.ForeignKeys.First(x => x.Value == commonRefTablePath[i + 1]);
+                            var tbl = fk.Value;
+                            var col = fk.Key;
+
+                            
+
+                            if(i == commonRefTablePath.Count - 2)
+                            {
+                                strBuild.Add(col.Name);
+                            }
+                            else
+                            {
+                                strBuild.Add(tbl.Name);
+                            }
+                        }
+                        var myfk = Table.ForeignKeys.First(x => x.Value == commonRefTablePath.Last());
+                        var finalStr = string.Format(".Where(x => routeFilter.{0} == null ||  {1} == routeFilter.{0})", myfk.Key.Name, string.Join(".", strBuild));
+                        filters.Add(finalStr);
+                    }
+                    
+
+
+
+                }
                 var joinedFilters = string.Join("", filters);
 
                 var tmp = string.Format(@"{{""{0}"", db.{1}{4}.Select(x => new  SelectListItem {{ Value = x.{2}.ToString(), Text = x.{3}.ToString() }}) }}", c.Name, t.Name, pk.Name, textCol.Name, joinedFilters);

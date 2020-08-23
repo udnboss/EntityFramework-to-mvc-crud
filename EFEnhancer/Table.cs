@@ -74,6 +74,15 @@ namespace EFEnhancer
             }
         }
 
+        public override bool Equals(object obj)
+        {
+            return ReferenceEquals(this, obj) || (obj is Table && (obj as Table).Name == Name);
+        }
+        public override int GetHashCode()
+        {
+            return Name.GetHashCode();
+        }
+
         public class Column
         {
             public Type Type { get; set; }

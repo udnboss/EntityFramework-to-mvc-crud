@@ -1,0 +1,42 @@
+﻿@using _namespace_.ViewModels
+@model _table_ViewModel
+
+@{
+    var controller = ViewContext.RouteData.Values["controller"].ToString();
+
+    var ui_html_target = (ViewContext.RouteData.Values["ui_html_target"] ?? Request.QueryString["ui_html_target"]) as string;
+    var ui_list_view = (ViewContext.RouteData.Values["ui_list_view"] ?? Request.QueryString["ui_list_view"]) as string;
+    var ui_modal_id = Guid.NewGuid().ToString();
+    var ui_tab_id = (ViewContext.RouteData.Values["ui_tab_id"] ?? Request.QueryString["ui_tab_id"]) as string;
+    var ui_route_filter = (ViewContext.RouteData.Values["ui_route_filter"] ?? Request.QueryString["ui_route_filter"]) as string;
+
+    var ui_form_id = Guid.NewGuid().ToString();
+
+    var currentItem = Model;
+}
+
+<h1>@currentItem._displaycolumn_</h1>
+<div class="card my-5">
+    <div class="card-body">
+        @Html.Action(actionName: "Details", controllerName: controller, routeValues: new { partial = true, id = currentItem._pkname_, ui_html_target, ui_modal_id, ui_list_view, ui_route_filter })
+    </div>
+</div>
+<div>
+    <script>
+        $(function () {
+            if ("@ui_tab_id" == "") {
+                $('#tabs-_table_ a').first().tab('show');
+            }
+            else {
+                $('#tabs-_table_ a[href="#@ui_tab_id"]').tab('show');
+            }
+
+        });
+    </script>
+    <ul class="nav nav-tabs" id="tabs-_table_">
+        _tabitems_
+    </ul>
+    <div class="tab-content" id="tabContent-_table_">
+        _tabpanes_
+    </div>
+</div>

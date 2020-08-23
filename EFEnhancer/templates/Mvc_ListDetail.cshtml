@@ -40,13 +40,14 @@
 
     <div class="row">
         <div class="col-md-4">
+            <h3>_tablename_s</h3>
             <div class="list-group">
                 @foreach (var item in Model)
                 {
                     @*<a href="@Url.Action(actionName: "Index", controllerName: controller, routeValues: new { id = item.ID, ui_route_filter })" class="list-group-item list-group-item-action @(currentItem != null && currentItem._pkname_ == item._pkname_ ? "list-group-item-primary" : "")">@item._displaycolumn_</a>*@
 
                     @Ajax.ActionLink(
-                        linkText: item._displaycolumn_,
+                        linkText: item._displaycolumn_.ToString(),
                         actionName: "List",
                         controllerName: controller,
                         routeValues: new { id = item.ID, ui_html_target, ui_list_view, ui_modal_id, ui_tab_id, ui_route_filter },
@@ -72,31 +73,7 @@
         <div class="col-md-8">
             @if (currentItem != null)
             {
-                <h1>@currentItem._displaycolumn_</h1>
-                <div class="card my-5">
-                    <div class="card-body">
-                        @Html.Action(actionName: "Details", controllerName: controller, routeValues: new { id = currentItem._pkname_, ui_html_target, ui_modal_id, ui_list_view, ui_route_filter })
-                    </div>
-                </div>
-                <div>
-                    <script>
-                        $(function () {
-                            if ("@ui_tab_id" == "") {
-                                $('#tabs-_table_ a').first().tab('show');
-                            }
-                            else {
-                                $('#tabs-_table_ a[href="#@ui_tab_id"]').tab('show');
-                            }
-
-                        });
-                    </script>
-                    <ul class="nav nav-tabs" id="tabs-_table_">
-                        _tabitems_
-                    </ul>
-                    <div class="tab-content" id="tabContent-_table_">
-                        _tabpanes_
-                    </div>
-                </div>
+                @Html.Action(actionName: "DetailsWithTabs", controllerName: controller, routeValues: new { id = currentItem.ID, ui_html_target, ui_modal_id, ui_list_view, ui_route_filter })
             }
         </div>
     </div>
