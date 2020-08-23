@@ -1,0 +1,111 @@
+﻿<!-- reusable modal template for client side -->
+<script id="modal_template" type="text/html">
+    <div id="{modal_id}" class="modal fade" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{modal_title}</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="{modal_body_id}" class="p-2">
+                        {modal_body}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="text-center">
+                        <img class="loading" src="@Url.Content("~/Content/img/loading.gif")" style="display:none; height:30px;" />
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal"><i class="fa fa-close"></i> Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<!-- modals placeholder -->
+<div id="#modals"></div>
+
+<script>
+    function hide_modal(src) {
+        //hide the first parent modal.
+        var modal_div = $(src).parents('.modal').first();
+        modal_div.modal('hide');
+        modal_loading(false);
+    }
+
+
+
+    function show_error(error) {
+        //$('#error_panel').html(error.responseText);
+        //$('#error_modal').modal('show');
+
+        show_modal('error_modal', 'error', 'xlarge');
+
+        try {
+            var json = jQuery.parseJSON(error.responseText);
+            var html = "<h4>Errors:</h4><ul>";
+            for (var i in json) {
+                html += '<li>' + json[i] + '</li>';
+            }
+            html += "</ul>";
+            $('#error_modal_body').html(html);
+
+        } catch (e) {
+            // its not json
+            var er = error.responseText;
+            var regex = /((<style>)|(<style type=.+))((\s+)|(\S+)|(\r+)|(\n+))(.+)((\s+)|(\S+)|(\r+)|(\n+))(<\/style>)/g;
+
+            er = er.replace(regex, '');
+
+            $('#error_modal_body').html(er);
+        }
+
+        modal_loading(false);
+    }
+
+    function before_modal() {
+        $('#edit_modal_panel').html('');
+    }
+
+    function show_modal(modal_id, modal_title, modal_size) {
+        var modal_template = $('#modal_template').html();
+
+        modal_template = modal_template.replace('{modal_id}', modal_id);
+        modal_template = modal_template.replace('{modal_title}', modal_title);
+        modal_template = modal_template.replace('{modal_body_id}', modal_id + '_body');
+        modal_template = modal_template.replace('{modal_body}', '');
+        modal_template = modal_template.replace('{modal_loading}', modal_id + '_loading');
+        modal_template = modal_template.replace('{modal_size}', modal_size);
+
+        $('body').append(modal_template);
+
+        var modal_div = $('#' + modal_id);
+
+        var modal = modal_div.modal({ backdrop: 'static' });
+
+        modal_loading(modal_div.attr('id'), true);
+
+        modal.on('hidden.bs.modal', function (e) {
+            modal.modal('dispose');
+            $('#' + modal_id).remove();
+        });
+
+        modal.on('shown.bs.modal', function () {
+            $(document).off('focusin.modal');
+
+        });
+    }
+
+    function modal_loading(show) {
+        if (show)
+            $('.loading').show();
+        else {
+            $('.loading').hide();
+            $('.modal input').focus();
+        }
+
+    }
+</script>

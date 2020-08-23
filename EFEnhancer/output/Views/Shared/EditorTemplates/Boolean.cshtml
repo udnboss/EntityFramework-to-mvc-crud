@@ -1,0 +1,6 @@
+﻿@model Boolean?
+
+<div class="form-check">
+    <input type="checkbox" class="form-check-input" id="@Html.NameFor(m=> m)" value="true" name="@Html.NameFor(m=> m)" @(Model ?? false ? "checked='checked'" : "") style="transform: scale(1.5) translateX(2px);" />
+</div>
+<input type="hidden" value="false" name="@Html.NameFor(m=> m)" />
