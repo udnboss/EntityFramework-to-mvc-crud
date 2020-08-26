@@ -328,6 +328,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ActiproSoftware.SyntaxEditor.WinForms.txt" />
     <Content Include="efEnhancer.txt" />
     <Content Include="Model1.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
