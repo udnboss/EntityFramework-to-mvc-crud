@@ -25,6 +25,7 @@ namespace EFEnhancer
         public string Name { get; set; }
         public Nullable<System.Guid> ProjectID { get; set; }
         public Nullable<System.Guid> InterfaceAgreementID { get; set; }
+        public Nullable<System.Guid> InterfacePointID { get; set; }
     
         public virtual TIMS_Project TIMS_Project { get; set; }
         public virtual TIMS_ProjectInterfaceAgreement TIMS_ProjectInterfaceAgreement { get; set; }
@@ -32,5 +33,6 @@ namespace EFEnhancer
         public virtual ICollection<TIMS_ProjectActionItemWorkflow> TIMS_ProjectActionItemWorkflow { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TIMS_UserWatchlistItem> TIMS_UserWatchlistItem { get; set; }
+        public virtual TIMS_ProjectInterfacePoint TIMS_ProjectInterfacePoint { get; set; }
     }
 }

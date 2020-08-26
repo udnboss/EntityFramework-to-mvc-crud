@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="IMSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="IMSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="TIMS_Contractor">
           <Key>
             <PropertyRef Name="ID" />
@@ -40,6 +40,7 @@
           <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="500" />
           <Property Name="ProjectID" Type="uniqueidentifier" />
+          <Property Name="InterfacePointID" Type="uniqueidentifier" />
           <Property Name="InterfaceAgreementID" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="TIMS_ProjectActionItemWorkflow">
@@ -82,7 +83,9 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" />
           <Property Name="Comment" Type="nvarchar(max)" />
+          <Property Name="ProjectID" Type="uniqueidentifier" />
           <Property Name="ProjectInterfacePointWorkflowID" Type="uniqueidentifier" />
           <Property Name="ProjectInterfaceAgreementWorkflowID" Type="uniqueidentifier" />
           <Property Name="ProjectActionItemWorkflowID" Type="uniqueidentifier" />
@@ -129,6 +132,7 @@
           </Key>
           <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="500" />
+          <Property Name="ProjectID" Type="uniqueidentifier" />
           <Property Name="InterfacePointID" Type="uniqueidentifier" />
           <Property Name="RequestorPackageID" Type="uniqueidentifier" />
           <Property Name="ResponderPackageID" Type="uniqueidentifier" />
@@ -298,6 +302,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_TIMS_ProjectActionItem_TIMS_ProjectInterfacePoint">
+          <End Role="TIMS_ProjectInterfacePoint" Type="Self.TIMS_ProjectInterfacePoint" Multiplicity="0..1" />
+          <End Role="TIMS_ProjectActionItem" Type="Self.TIMS_ProjectActionItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TIMS_ProjectInterfacePoint">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TIMS_ProjectActionItem">
+              <PropertyRef Name="InterfacePointID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_TIMS_ProjectActionItemWorkflow_TIMS_ProjectActionItem">
           <End Role="TIMS_ProjectActionItem" Type="Self.TIMS_ProjectActionItem" Multiplicity="0..1" />
           <End Role="TIMS_ProjectActionItemWorkflow" Type="Self.TIMS_ProjectActionItemWorkflow" Multiplicity="*" />
@@ -403,6 +419,18 @@
             </Principal>
             <Dependent Role="TIMS_ProjectAttachment">
               <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TIMS_ProjectComment_TIMS_Project">
+          <End Role="TIMS_Project" Type="Self.TIMS_Project" Multiplicity="0..1" />
+          <End Role="TIMS_ProjectComment" Type="Self.TIMS_ProjectComment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TIMS_Project">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TIMS_ProjectComment">
+              <PropertyRef Name="ProjectID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -523,6 +551,18 @@
             </Principal>
             <Dependent Role="TIMS_ProjectDisciplineInterfaceTypeField">
               <PropertyRef Name="InterfaceTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TIMS_ProjectInterfaceAgreement_TIMS_Project">
+          <End Role="TIMS_Project" Type="Self.TIMS_Project" Multiplicity="0..1" />
+          <End Role="TIMS_ProjectInterfaceAgreement" Type="Self.TIMS_ProjectInterfaceAgreement" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TIMS_Project">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TIMS_ProjectInterfaceAgreement">
+              <PropertyRef Name="ProjectID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -970,6 +1010,10 @@
             <End Role="TIMS_ProjectInterfaceAgreement" EntitySet="TIMS_ProjectInterfaceAgreement" />
             <End Role="TIMS_ProjectActionItem" EntitySet="TIMS_ProjectActionItem" />
           </AssociationSet>
+          <AssociationSet Name="FK_TIMS_ProjectActionItem_TIMS_ProjectInterfacePoint" Association="Self.FK_TIMS_ProjectActionItem_TIMS_ProjectInterfacePoint">
+            <End Role="TIMS_ProjectInterfacePoint" EntitySet="TIMS_ProjectInterfacePoint" />
+            <End Role="TIMS_ProjectActionItem" EntitySet="TIMS_ProjectActionItem" />
+          </AssociationSet>
           <AssociationSet Name="FK_TIMS_ProjectActionItemWorkflow_TIMS_ProjectActionItem" Association="Self.FK_TIMS_ProjectActionItemWorkflow_TIMS_ProjectActionItem">
             <End Role="TIMS_ProjectActionItem" EntitySet="TIMS_ProjectActionItem" />
             <End Role="TIMS_ProjectActionItemWorkflow" EntitySet="TIMS_ProjectActionItemWorkflow" />
@@ -1005,6 +1049,10 @@
           <AssociationSet Name="FK_TIMS_ProjectAttachment_TIMS_User" Association="Self.FK_TIMS_ProjectAttachment_TIMS_User">
             <End Role="TIMS_User" EntitySet="TIMS_User" />
             <End Role="TIMS_ProjectAttachment" EntitySet="TIMS_ProjectAttachment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TIMS_ProjectComment_TIMS_Project" Association="Self.FK_TIMS_ProjectComment_TIMS_Project">
+            <End Role="TIMS_Project" EntitySet="TIMS_Project" />
+            <End Role="TIMS_ProjectComment" EntitySet="TIMS_ProjectComment" />
           </AssociationSet>
           <AssociationSet Name="FK_TIMS_ProjectComment_TIMS_ProjectActionItemWorkflow" Association="Self.FK_TIMS_ProjectComment_TIMS_ProjectActionItemWorkflow">
             <End Role="TIMS_ProjectActionItemWorkflow" EntitySet="TIMS_ProjectActionItemWorkflow" />
@@ -1045,6 +1093,10 @@
           <AssociationSet Name="FK_TIMS_ProjectDisciplineInterfaceTypeField_TIMS_ProjectDisciplineInterfaceType" Association="Self.FK_TIMS_ProjectDisciplineInterfaceTypeField_TIMS_ProjectDisciplineInterfaceType">
             <End Role="TIMS_ProjectDisciplineInterfaceType" EntitySet="TIMS_ProjectDisciplineInterfaceType" />
             <End Role="TIMS_ProjectDisciplineInterfaceTypeField" EntitySet="TIMS_ProjectDisciplineInterfaceTypeField" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TIMS_ProjectInterfaceAgreement_TIMS_Project" Association="Self.FK_TIMS_ProjectInterfaceAgreement_TIMS_Project">
+            <End Role="TIMS_Project" EntitySet="TIMS_Project" />
+            <End Role="TIMS_ProjectInterfaceAgreement" EntitySet="TIMS_ProjectInterfaceAgreement" />
           </AssociationSet>
           <AssociationSet Name="FK_TIMS_ProjectInterfaceAgreement_TIMS_ProjectInterfacePoint" Association="Self.FK_TIMS_ProjectInterfaceAgreement_TIMS_ProjectInterfacePoint">
             <End Role="TIMS_ProjectInterfacePoint" EntitySet="TIMS_ProjectInterfacePoint" />
@@ -1183,8 +1235,7 @@
             <End Role="TIMS_UserWatchlistItem" EntitySet="TIMS_UserWatchlistItem" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="IMSModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -1226,6 +1277,8 @@
           <NavigationProperty Name="TIMS_ProjectPackage" Relationship="Self.FK_TIMS_ProjectPackage_TIMS_Project" FromRole="TIMS_Project" ToRole="TIMS_ProjectPackage" />
           <NavigationProperty Name="TIMS_ProjectPhysicalArea" Relationship="Self.FK_TIMS_ProjectPhysicalArea_TIMS_Project" FromRole="TIMS_Project" ToRole="TIMS_ProjectPhysicalArea" />
           <NavigationProperty Name="TIMS_UserRole" Relationship="Self.FK_TIMS_UserRole_TIMS_Project" FromRole="TIMS_Project" ToRole="TIMS_UserRole" />
+          <NavigationProperty Name="TIMS_ProjectComment" Relationship="IMSModel.FK_TIMS_ProjectComment_TIMS_Project" FromRole="TIMS_Project" ToRole="TIMS_ProjectComment" />
+          <NavigationProperty Name="TIMS_ProjectInterfaceAgreement" Relationship="IMSModel.FK_TIMS_ProjectInterfaceAgreement_TIMS_Project" FromRole="TIMS_Project" ToRole="TIMS_ProjectInterfaceAgreement" />
         </EntityType>
         <EntityType Name="TIMS_ProjectActionItem">
           <Key>
@@ -1239,6 +1292,8 @@
           <NavigationProperty Name="TIMS_ProjectInterfaceAgreement" Relationship="Self.FK_TIMS_ProjectActionItem_TIMS_ProjectInterfaceAgreement" FromRole="TIMS_ProjectActionItem" ToRole="TIMS_ProjectInterfaceAgreement" />
           <NavigationProperty Name="TIMS_ProjectActionItemWorkflow" Relationship="Self.FK_TIMS_ProjectActionItemWorkflow_TIMS_ProjectActionItem" FromRole="TIMS_ProjectActionItem" ToRole="TIMS_ProjectActionItemWorkflow" />
           <NavigationProperty Name="TIMS_UserWatchlistItem" Relationship="Self.FK_TIMS_UserWatchlistItem_TIMS_ProjectActionItem" FromRole="TIMS_ProjectActionItem" ToRole="TIMS_UserWatchlistItem" />
+          <Property Name="InterfacePointID" Type="Guid" />
+          <NavigationProperty Name="TIMS_ProjectInterfacePoint" Relationship="IMSModel.FK_TIMS_ProjectActionItem_TIMS_ProjectInterfacePoint" FromRole="TIMS_ProjectActionItem" ToRole="TIMS_ProjectInterfacePoint" />
         </EntityType>
         <EntityType Name="TIMS_ProjectActionItemWorkflow">
           <Key>
@@ -1303,6 +1358,9 @@
           <NavigationProperty Name="TIMS_ProjectInterfaceAgreementWorkflow" Relationship="Self.FK_TIMS_ProjectComment_TIMS_ProjectInterfaceAgreementWorkflow" FromRole="TIMS_ProjectComment" ToRole="TIMS_ProjectInterfaceAgreementWorkflow" />
           <NavigationProperty Name="TIMS_ProjectInterfacePointWorkflow" Relationship="Self.FK_TIMS_ProjectComment_TIMS_ProjectInterfacePointWorkflow" FromRole="TIMS_ProjectComment" ToRole="TIMS_ProjectInterfacePointWorkflow" />
           <NavigationProperty Name="TIMS_User" Relationship="Self.FK_TIMS_ProjectComment_TIMS_User" FromRole="TIMS_ProjectComment" ToRole="TIMS_User" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ProjectID" Type="Guid" />
+          <NavigationProperty Name="TIMS_Project" Relationship="IMSModel.FK_TIMS_ProjectComment_TIMS_Project" FromRole="TIMS_ProjectComment" ToRole="TIMS_Project" />
         </EntityType>
         <EntityType Name="TIMS_ProjectContractor">
           <Key>
@@ -1375,6 +1433,8 @@
           <NavigationProperty Name="TIMS_ProjectPackage1" Relationship="Self.FK_TIMS_ProjectInterfaceAgreement_TIMS_ProjectPackage1" FromRole="TIMS_ProjectInterfaceAgreement" ToRole="TIMS_ProjectPackage" />
           <NavigationProperty Name="TIMS_ProjectInterfaceAgreementWorkflow" Relationship="Self.FK_TIMS_ProjectInterfaceAgreementWorkflow_TIMS_ProjectInterfaceAgreement" FromRole="TIMS_ProjectInterfaceAgreement" ToRole="TIMS_ProjectInterfaceAgreementWorkflow" />
           <NavigationProperty Name="TIMS_UserWatchlistItem" Relationship="Self.FK_TIMS_UserWatchlistItem_TIMS_ProjectInterfaceAgreement" FromRole="TIMS_ProjectInterfaceAgreement" ToRole="TIMS_UserWatchlistItem" />
+          <Property Name="ProjectID" Type="Guid" />
+          <NavigationProperty Name="TIMS_Project" Relationship="IMSModel.FK_TIMS_ProjectInterfaceAgreement_TIMS_Project" FromRole="TIMS_ProjectInterfaceAgreement" ToRole="TIMS_Project" />
         </EntityType>
         <EntityType Name="TIMS_ProjectInterfaceAgreementWorkflow">
           <Key>
@@ -1420,6 +1480,7 @@
           <NavigationProperty Name="TIMS_ProjectPackage1" Relationship="Self.FK_TIMS_ProjectInterfacePoint_TIMS_ProjectPackage1" FromRole="TIMS_ProjectInterfacePoint" ToRole="TIMS_ProjectPackage" />
           <NavigationProperty Name="TIMS_ProjectPackage2" Relationship="Self.FK_TIMS_ProjectInterfacePoint_TIMS_ProjectPackage2" FromRole="TIMS_ProjectInterfacePoint" ToRole="TIMS_ProjectPackage" />
           <NavigationProperty Name="TIMS_UserWatchlistItem" Relationship="Self.FK_TIMS_UserWatchlistItem_TIMS_ProjectInterfacePoint" FromRole="TIMS_ProjectInterfacePoint" ToRole="TIMS_UserWatchlistItem" />
+          <NavigationProperty Name="TIMS_ProjectActionItem" Relationship="IMSModel.FK_TIMS_ProjectActionItem_TIMS_ProjectInterfacePoint" FromRole="TIMS_ProjectInterfacePoint" ToRole="TIMS_ProjectActionItem" />
         </EntityType>
         <EntityType Name="TIMS_ProjectInterfacePointFieldEntry">
           <Key>
@@ -2475,7 +2536,55 @@
             <End Role="TIMS_User" EntitySet="TIMS_User" />
             <End Role="TIMS_UserWatchlistItem" EntitySet="TIMS_UserWatchlistItem" />
           </AssociationSet>
+          <AssociationSet Name="FK_TIMS_ProjectComment_TIMS_Project" Association="IMSModel.FK_TIMS_ProjectComment_TIMS_Project">
+            <End Role="TIMS_Project" EntitySet="TIMS_Project" />
+            <End Role="TIMS_ProjectComment" EntitySet="TIMS_ProjectComment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TIMS_ProjectInterfaceAgreement_TIMS_Project" Association="IMSModel.FK_TIMS_ProjectInterfaceAgreement_TIMS_Project">
+            <End Role="TIMS_Project" EntitySet="TIMS_Project" />
+            <End Role="TIMS_ProjectInterfaceAgreement" EntitySet="TIMS_ProjectInterfaceAgreement" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TIMS_ProjectActionItem_TIMS_ProjectInterfacePoint" Association="IMSModel.FK_TIMS_ProjectActionItem_TIMS_ProjectInterfacePoint">
+            <End Role="TIMS_ProjectInterfacePoint" EntitySet="TIMS_ProjectInterfacePoint" />
+            <End Role="TIMS_ProjectActionItem" EntitySet="TIMS_ProjectActionItem" />
+          </AssociationSet>
         </EntityContainer>
+        <Association Name="FK_TIMS_ProjectComment_TIMS_Project">
+          <End Type="IMSModel.TIMS_Project" Role="TIMS_Project" Multiplicity="0..1" />
+          <End Type="IMSModel.TIMS_ProjectComment" Role="TIMS_ProjectComment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TIMS_Project">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TIMS_ProjectComment">
+              <PropertyRef Name="ProjectID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TIMS_ProjectInterfaceAgreement_TIMS_Project">
+          <End Type="IMSModel.TIMS_Project" Role="TIMS_Project" Multiplicity="0..1" />
+          <End Type="IMSModel.TIMS_ProjectInterfaceAgreement" Role="TIMS_ProjectInterfaceAgreement" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TIMS_Project">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TIMS_ProjectInterfaceAgreement">
+              <PropertyRef Name="ProjectID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TIMS_ProjectActionItem_TIMS_ProjectInterfacePoint">
+          <End Type="IMSModel.TIMS_ProjectInterfacePoint" Role="TIMS_ProjectInterfacePoint" Multiplicity="0..1" />
+          <End Type="IMSModel.TIMS_ProjectActionItem" Role="TIMS_ProjectActionItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TIMS_ProjectInterfacePoint">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TIMS_ProjectActionItem">
+              <PropertyRef Name="InterfacePointID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2517,6 +2626,7 @@
           <EntitySetMapping Name="TIMS_ProjectActionItem">
             <EntityTypeMapping TypeName="IMSModel.TIMS_ProjectActionItem">
               <MappingFragment StoreEntitySet="TIMS_ProjectActionItem">
+                <ScalarProperty Name="InterfacePointID" ColumnName="InterfacePointID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="ProjectID" ColumnName="ProjectID" />
@@ -2565,6 +2675,8 @@
           <EntitySetMapping Name="TIMS_ProjectComment">
             <EntityTypeMapping TypeName="IMSModel.TIMS_ProjectComment">
               <MappingFragment StoreEntitySet="TIMS_ProjectComment">
+                <ScalarProperty Name="ProjectID" ColumnName="ProjectID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Comment" ColumnName="Comment" />
                 <ScalarProperty Name="ProjectInterfacePointWorkflowID" ColumnName="ProjectInterfacePointWorkflowID" />
@@ -2616,6 +2728,7 @@
           <EntitySetMapping Name="TIMS_ProjectInterfaceAgreement">
             <EntityTypeMapping TypeName="IMSModel.TIMS_ProjectInterfaceAgreement">
               <MappingFragment StoreEntitySet="TIMS_ProjectInterfaceAgreement">
+                <ScalarProperty Name="ProjectID" ColumnName="ProjectID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="InterfacePointID" ColumnName="InterfacePointID" />

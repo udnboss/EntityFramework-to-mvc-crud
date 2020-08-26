@@ -20,37 +20,29 @@
     }
 
     <div>
-        <h3>_tablename_s</h3>
-        <div class="text-right mb-2">
-            @Ajax.ActionLink(
-            linkText: "Add New _tablename_..",
-            actionName: "New",
-            controllerName: controller,
-            routeValues: new { ui_html_target, ui_list_view, ui_modal_id, ui_tab_id, ui_route_filter },
-            ajaxOptions: new AjaxOptions
-            {
-                HttpMethod = "GET",
-                OnBegin = "show_modal('" + ui_modal_id + "')",
-                OnSuccess = "",
-                Confirm = null,
-                AllowCache = false,
-                InsertionMode = InsertionMode.Replace,
-                OnFailure = "show_error",
-                OnComplete = "modal_loading(false)",
-                UpdateTargetId = ui_modal_id + "_body"
-            },
-            htmlAttributes: new
-            {
-                @class = "btn btn-outline-primary btn-sm"
-            })
+        <div class="row p-2">
+            <div class="col">
+                <h3>_tablename_s</h3>
+            </div>
+            <div class="ml-auto mr-2">
+                <a class="btn btn-outline-success btn-sm" 
+                   data-ajax="true" 
+                   data-ajax-begin="show_modal('@(ui_modal_id)', 'Add New _tablename_')" 
+                   data-ajax-complete="modal_loading(false)" 
+                   data-ajax-failure="show_error" 
+                   data-ajax-method="GET" 
+                   data-ajax-mode="replace" 
+                   data-ajax-update="#@(ui_modal_id)_body" 
+                   href="@Url.Action("New", controller, new { ui_html_target, ui_list_view, ui_modal_id, ui_tab_id, ui_route_filter })"><i class="fas fa-plus-circle"></i> New</a>
+            </div>
         </div>
-
+        
         <div class="table-responsive">
             <table class="table">
                 <thead>
                     <tr>
                         <th>
-                            View
+                            
                         </th>
                         _theadColumns_
                     </tr>
@@ -60,27 +52,15 @@
                     {
                         <tr class="@(currentItem != null && item._pkname_ == currentItem._pkname_ ? "table-warning" : "")">
                             <td>
-                                @Ajax.ActionLink(
-                                    linkText: "View",
-                                    actionName: "Details",
-                                    controllerName: controller,
-                                    routeValues: new { id = item.ID, ui_html_target, ui_list_view, ui_modal_id, ui_tab_id, ui_route_filter },
-                                    ajaxOptions: new AjaxOptions
-                                    {
-                                        HttpMethod = "GET",
-                                        OnBegin = "show_modal('" + ui_modal_id + "')",
-                                        OnSuccess = "",
-                                        Confirm = null,
-                                        AllowCache = false,
-                                        InsertionMode = InsertionMode.Replace,
-                                        OnFailure = "show_error",
-                                        OnComplete = "modal_loading(false)",
-                                        UpdateTargetId = ui_modal_id + "_body"
-                                    },
-                                    htmlAttributes: new
-                                    {
-                                        @class = "btn btn-outline-primary btn-sm"
-                                    })
+                                <a class="btn btn-outline-primary btn-sm" 
+                                   data-ajax="true" 
+                                   data-ajax-begin="show_modal('@(ui_modal_id)')" 
+                                   data-ajax-complete="modal_loading(false)" 
+                                   data-ajax-failure="show_error" 
+                                   data-ajax-method="GET" 
+                                   data-ajax-mode="replace" 
+                                   data-ajax-update="#@(ui_modal_id)_body" 
+                                   href="@Url.Action("Details", controller, new { id = item.ID, ui_html_target, ui_list_view, ui_modal_id, ui_tab_id, ui_route_filter })"><i class="fas fa-eye"></i> View</a>
                             </td>
                             _tbodyColumns_
                         </tr>

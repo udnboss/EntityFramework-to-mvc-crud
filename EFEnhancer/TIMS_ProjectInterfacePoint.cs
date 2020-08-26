@@ -19,6 +19,7 @@ namespace EFEnhancer
         {
             this.TIMS_ProjectInterfaceAgreement = new HashSet<TIMS_ProjectInterfaceAgreement>();
             this.TIMS_UserWatchlistItem = new HashSet<TIMS_UserWatchlistItem>();
+            this.TIMS_ProjectActionItem = new HashSet<TIMS_ProjectActionItem>();
         }
     
         public System.Guid ID { get; set; }
@@ -39,5 +40,7 @@ namespace EFEnhancer
         public virtual TIMS_ProjectPackage TIMS_ProjectPackage2 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TIMS_UserWatchlistItem> TIMS_UserWatchlistItem { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<TIMS_ProjectActionItem> TIMS_ProjectActionItem { get; set; }
     }
 }

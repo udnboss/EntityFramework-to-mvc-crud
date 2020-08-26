@@ -141,6 +141,9 @@
     <None Include="output\Views\Shared\Modal.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="templates\Mvc_Delete.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="templates\Mvc_DetailsWithTabs.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

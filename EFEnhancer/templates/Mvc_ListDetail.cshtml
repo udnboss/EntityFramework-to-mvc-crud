@@ -15,61 +15,43 @@
 
 <div>
     <div class="row">
-        <div class="col-md-4">
-            <h3>_tablename_s</h3>
-            <div class="text-right mb-5">
-                @Ajax.ActionLink(
-                linkText: "Add New _tablename_..",
-                actionName: "New",
-                controllerName: controller,
-                routeValues: new { ui_html_target, ui_list_view, ui_modal_id, ui_tab_id, ui_route_filter },
-                ajaxOptions: new AjaxOptions
-                {
-                    HttpMethod = "GET",
-                    OnBegin = "show_modal('" + ui_modal_id + "')",
-                    OnSuccess = "",
-                    Confirm = null,
-                    AllowCache = false,
-                    InsertionMode = InsertionMode.Replace,
-                    OnFailure = "show_error",
-                    OnComplete = "modal_loading(false)",
-                    UpdateTargetId = ui_modal_id + "_body"
-                },
-                htmlAttributes: new
-                {
-                    @class = "btn btn-outline-primary btn-sm"
-                })
-            </div>
+        <div class="col-md-3">
+            <div class="row">
+                <div class="col">
+                    <h3>_tablename_s</h3>
+                </div>
+                <div class="ml-auto mr-2">
+                    <a class="btn btn-outline-success btn-sm"
+                       data-ajax="true"
+                       data-ajax-begin="show_modal('@(ui_modal_id)', 'Add New _tablename_')"
+                       data-ajax-complete="modal_loading(false)"
+                       data-ajax-failure="show_error"
+                       data-ajax-method="GET"
+                       data-ajax-mode="replace"
+                       data-ajax-update="#@(ui_modal_id)_body"
+                       href="@Url.Action("New", controller, new { ui_html_target, ui_list_view, ui_modal_id, ui_tab_id, ui_route_filter })"><i class="fas fa-plus-circle"></i> Add New _tablename_..</a>
+                </div>
+            </div>                       
             <div class="list-group">
                 @foreach (var item in Model)
                 {
                     @*<a href="@Url.Action(actionName: "Index", controllerName: controller, routeValues: new { id = item.ID, ui_route_filter })" class="list-group-item list-group-item-action @(currentItem != null && currentItem._pkname_ == item._pkname_ ? "list-group-item-primary" : "")">@item._displaycolumn_</a>*@
 
-                    @Ajax.ActionLink(
-                        linkText: item._displaycolumn_.ToString(),
-                        actionName: "List",
-                        controllerName: controller,
-                        routeValues: new { id = item.ID, ui_html_target, ui_list_view, ui_modal_id, ui_tab_id, ui_route_filter },
-                        ajaxOptions: new AjaxOptions
-                        {
-                            HttpMethod = "GET",
-                            OnBegin = "",
-                            OnSuccess = "",
-                            Confirm = null,
-                            AllowCache = false,
-                            InsertionMode = InsertionMode.Replace,
-                            OnFailure = "show_error",
-                            OnComplete = "modal_loading(false)",
-                            UpdateTargetId = ui_html_target
-                        },
-                        htmlAttributes: new
-                        {
-                            @class = "list-group-item list-group-item-action" + (currentItem != null && currentItem._pkname_ == item._pkname_ ? " list-group-item-primary" : "")
-                        })
+                    <a class="@("list-group-item list-group-item-action" + (currentItem != null && currentItem._pkname_ == item._pkname_ ? " list-group-item-primary" : ""))"
+                       data-ajax="true"
+                       data-ajax-begin=""
+                       data-ajax-complete=""
+                       data-ajax-failure="show_error"
+                       data-ajax-method="GET"
+                       data-ajax-mode="replace"
+                       data-ajax-update="#@(ui_html_target)"
+                       href="@Url.Action("List", controller, new { id = item.ID, ui_html_target, ui_list_view, ui_modal_id, ui_tab_id, ui_route_filter })">@item._displaycolumn_</a>
+
                 }
             </div>
         </div>
-        <div class="col-md-8">
+        <div class="col-md-9">
+
             @if (currentItem != null)
             {
                 @Html.Action(actionName: "DetailsWithTabs", controllerName: controller, routeValues: new { id = currentItem.ID, ui_html_target, ui_modal_id, ui_list_view, ui_route_filter })

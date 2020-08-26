@@ -14,57 +14,37 @@
 }
 
 <div>
-    <h4>@Model._displaycolumn_</h4>
-    <hr />
-    <div class="text-right">
-        @Ajax.ActionLink(
-    linkText: "Edit",
-    actionName: "Edit",
-    controllerName: controller,
-    routeValues: new { id = Model.ID, ui_html_target, ui_list_view, ui_modal_id, ui_tab_id, ui_route_filter },
-    ajaxOptions: new AjaxOptions
-    {
-        HttpMethod = "GET",
-        OnBegin = "modal_loading(true);" + "show_modal('" + ui_modal_id + "');",
-        OnSuccess = "",
-        Confirm = null,
-        AllowCache = false,
-        InsertionMode = InsertionMode.Replace,
-        OnFailure = "show_error",
-        OnComplete = "modal_loading(false)",
-        UpdateTargetId = ui_modal_id + "_body"
-    },
-    htmlAttributes: new
-    {
-        @class = "btn btn-primary btn-sm"
-    })
+    <div class="row p-2">
+        <div class="col">
+            <h4>@Model._displaycolumn_</h4>
+        </div>
+        <div class="ml-auto mr-2">
+            <a class="btn btn-primary btn-sm"
+               data-ajax="true"
+               data-ajax-begin="modal_loading(true);show_modal('@(ui_modal_id)', 'Edit @Model._displaycolumn_');"
+               data-ajax-complete="modal_loading(false)"
+               data-ajax-failure="show_error"
+               data-ajax-method="GET"
+               data-ajax-mode="replace"
+               data-ajax-update="#@(ui_modal_id)_body"
+               href="@Url.Action("Edit", controller, new { id = Model.ID, ui_html_target, ui_list_view, ui_modal_id, ui_tab_id, ui_route_filter })"><i class="fas fa-edit"></i> Edit</a>
 
-        @using (Ajax.BeginForm(
-            actionName: "Delete",
-            controllerName: controller,
-            routeValues: new { id = Model.ID, ui_html_target, ui_list_view, ui_modal_id, ui_tab_id, ui_route_filter },
-            ajaxOptions: new AjaxOptions
-            {
-                HttpMethod = "POST",
-                OnBegin = "modal_loading(true)",
-                OnSuccess = "hide_modal(this)",
-                Confirm = null,
-                AllowCache = false,
-                InsertionMode = InsertionMode.Replace,
-                OnFailure = "show_error",
-                OnComplete = "modal_loading(false)",
-                UpdateTargetId = ui_html_target
-            },
-            htmlAttributes: new
-            {
-                @class = "d-inline form-inline",
-                id = ui_form_id
-            }))
-        {
-            @Html.AntiForgeryToken()
-            <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Confirm delete?')">Delete</button>
-        }
+            &nbsp;
+
+            <a class="btn btn-outline-danger btn-sm" 
+               data-ajax="true" 
+               data-ajax-begin="modal_loading(true);show_modal('@(ui_modal_id)', 'Delete Confirmation');"
+               data-ajax-complete="modal_loading(false)" 
+               data-ajax-failure="show_error" 
+               data-ajax-method="GET" 
+               data-ajax-mode="replace" 
+               data-ajax-update="#@(ui_modal_id)_body" 
+               href="@Url.Action("Delete", controller, new { id = Model.ID, ui_html_target, ui_list_view, ui_modal_id, ui_tab_id, ui_route_filter })"><i class="fas fa-trash-alt"></i> Delete</a>
+        </div>
     </div>
+    
+    <hr />
+
     <div>
         _detailFields_
     </div>

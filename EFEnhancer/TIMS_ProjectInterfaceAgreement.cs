@@ -37,6 +37,7 @@ namespace EFEnhancer
         public Nullable<System.DateTime> AcceptedDate { get; set; }
         public Nullable<System.DateTime> ResponseDate { get; set; }
         public Nullable<System.DateTime> CloseDate { get; set; }
+        public Nullable<System.Guid> ProjectID { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TIMS_ProjectActionItem> TIMS_ProjectActionItem { get; set; }
@@ -47,5 +48,6 @@ namespace EFEnhancer
         public virtual ICollection<TIMS_ProjectInterfaceAgreementWorkflow> TIMS_ProjectInterfaceAgreementWorkflow { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TIMS_UserWatchlistItem> TIMS_UserWatchlistItem { get; set; }
+        public virtual TIMS_Project TIMS_Project { get; set; }
     }
 }

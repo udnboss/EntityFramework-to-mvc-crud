@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -16,7 +17,7 @@ namespace WorkflowWeb.Controllers
     {
         protected string user;
         protected IBusiness<T> business;
-        protected IMSEntities db = new IMSEntities();
+        protected DbContext db = new IMSEntities();
 
         public BaseController()
         {
@@ -108,7 +109,7 @@ namespace WorkflowWeb.Controllers
 
         private void Log(string methodName, RouteData routeData)
         {
-            
+
         }
 
         //private ActionResult Index(object id = null)

@@ -21,10 +21,13 @@ namespace EFEnhancer
         public Nullable<System.Guid> ProjectActionItemWorkflowID { get; set; }
         public Nullable<System.Guid> UserID { get; set; }
         public Nullable<System.DateTime> DateAdded { get; set; }
+        public string Name { get; set; }
+        public Nullable<System.Guid> ProjectID { get; set; }
     
         public virtual TIMS_ProjectActionItemWorkflow TIMS_ProjectActionItemWorkflow { get; set; }
         public virtual TIMS_ProjectInterfaceAgreementWorkflow TIMS_ProjectInterfaceAgreementWorkflow { get; set; }
         public virtual TIMS_ProjectInterfacePointWorkflow TIMS_ProjectInterfacePointWorkflow { get; set; }
         public virtual TIMS_User TIMS_User { get; set; }
+        public virtual TIMS_Project TIMS_Project { get; set; }
     }
 }

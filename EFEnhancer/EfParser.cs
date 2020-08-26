@@ -81,7 +81,8 @@ namespace EFEnhancer
             {
                 var rel = new TableParentRelation { Table = p };
                 parents.Add(rel);
-                rel.Parents = GetParents(p);
+                if(t != p) //avoid self reference
+                    rel.Parents = GetParents(p);
             }
 
             return parents;

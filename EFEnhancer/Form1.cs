@@ -9,6 +9,7 @@ using System.Data.Entity.Infrastructure;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -22,12 +23,11 @@ namespace EFEnhancer
         {
             InitializeComponent();
 
-            var files = Directory.GetFiles(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "templates\\"), "*.cs");
-            var data = files.Select(f => Path.GetFileNameWithoutExtension(f)).ToList();
-            comboBox1.DataSource = data;
+            var dbContexts = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.IsSubclassOf(typeof(DbContext))).ToList();
+            comboBox1.DataSource = dbContexts;
 
             //db = new COMMENTSEntities();
-            db = new IMSEntities();
+            
 
             //syntaxEditor1.Document.Language = cSharpSyntaxLanguage1;
             //syntaxEditor2.Document.Language = xmlSyntaxLanguage1;
@@ -37,7 +37,8 @@ namespace EFEnhancer
         private void button1_Click(object sender, EventArgs e)
         {
 
-            var files = Directory.GetFiles(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "templates\\"), "*.cs*").Select(x => Path.GetFileName(x));
+            var files = Directory.GetFiles(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "templates\\"), "*.cs*")
+                .Select(x => Path.GetFileName(x));
 
             treeView1.Nodes.Clear();
             var parser = new EfParser(db);
@@ -46,19 +47,27 @@ namespace EFEnhancer
             //build tree
             foreach(var t in tables)
             {
-                var tableNode = new TreeNode(t.Name) { Tag = t };
+                var tableNode = new TreeNode(t.Name) { Tag = t, ImageIndex = 5, SelectedImageIndex = 5 };
+            
                 treeView1.Nodes.Add(tableNode);
                 TreeNode columnsFolder = tableNode.Nodes.Add("Columns");
-                foreach(var c in t.Columns)
+                columnsFolder.ImageIndex = 0; columnsFolder.SelectedImageIndex = 1;
+
+                foreach (var c in t.Columns)
                 {
-                    var columnNode = new TreeNode(c.Name) { Tag = c };
+                    var columnNode = new TreeNode(c.Name) { Tag = c, ImageIndex = 6, SelectedImageIndex = 6 };
+            
                     columnsFolder.Nodes.Add(columnNode);
                 }
 
                 TreeNode templatesFolder = tableNode.Nodes.Add("Templates");
+                templatesFolder.ImageIndex = 0; 
+                templatesFolder.SelectedImageIndex = 1;
+
                 foreach (var file in files)
                 {
-                    var fileNode = new TreeNode(file) { Tag = file };
+                    var fileNode = new TreeNode(file) { Tag = file, ImageIndex = file.EndsWith(".cs") ? 2 : 3 };
+                    fileNode.SelectedImageIndex =  file.EndsWith(".cs") ? 2 : 3;
                     templatesFolder.Nodes.Add(fileNode);
                 }
 
@@ -80,10 +89,11 @@ namespace EFEnhancer
             propertyGrid1.SelectedObject = e.Node.Tag;
             if(e.Node.Tag is string)
             {
-                var _namespace = "WorkflowWeb";
+                var context = db.GetType();
+                var _namespace = textBox1.Text; // "WorkflowWeb";
                 var table = (e.Node.Parent.Parent.Tag as Table);
                 var cshtmlGen = new CshtmlGenerator(_namespace, dbTables, table);
-                var csGen = new CsGenerator(_namespace, dbTables, table);
+                var csGen = new CsGenerator(context, _namespace, dbTables, table);
                 var templateName = e.Node.Tag.ToString();
 
                 var isCs = templateName.EndsWith(".cs");
@@ -100,9 +110,9 @@ namespace EFEnhancer
             var csTemplate = controllerType + "_Controller.cs";
             var vmTemplate = controllerType + "_ViewModel.cs";
             var bTemplate = controllerType + "_Business.cs";
-            var cshtmlInclude = "Index,Details,DetailsWithTabs,DetailsWithBar,New,Edit,ListDetail,ListTable".Split(',').Select(x => controllerType + "_" + x + ".cshtml");
+            var cshtmlInclude = "Index,Details,DetailsWithTabs,DetailsWithBar,New,Edit,Delete,ListDetail,ListTable".Split(',').Select(x => controllerType + "_" + x + ".cshtml");
 
-            var _namespace = "WorkflowWeb";
+            var _namespace = textBox1.Text; //"WorkflowWeb";
 
             var controllers = new Dictionary<string, string>();
             var views = new List<Tuple<string, string, string>>();
@@ -112,7 +122,7 @@ namespace EFEnhancer
             foreach (var table in dbTables)
             {
                 var cshtmlGen = new CshtmlGenerator(_namespace, dbTables, table);
-                var csGen = new CsGenerator(_namespace, dbTables, table);
+                var csGen = new CsGenerator(db.GetType(), _namespace, dbTables, table);
 
                 controllers.Add(table.Name + "Controller.cs", csGen.GenerateCode(csTemplate));
                 viewmodels.Add(table.Name + "ViewModel.cs", csGen.GenerateCode(vmTemplate));
@@ -162,6 +172,12 @@ namespace EFEnhancer
         {
             GenerateFiles();
             MessageBox.Show("Done.");
+        }
+
+        private void comboBox1_SelectedValueChanged(object sender, EventArgs e)
+        {
+            var type = ((Type)comboBox1.SelectedItem);
+            db = (DbContext)Activator.CreateInstance(type);
         }
     }
 }

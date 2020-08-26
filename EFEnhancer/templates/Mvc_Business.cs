@@ -38,7 +38,7 @@ namespace _namespace_.Business
 
         public override IQueryable<_table_> GetIQueryable()
         {
-            return db._table__include_.AsQueryable();
+            return ((_dbcontext_)db)._table__include_.AsQueryable();
         }
 
         public IQueryable<_table_> GetIQueryable(_table_ filter)

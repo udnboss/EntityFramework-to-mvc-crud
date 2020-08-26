@@ -87,6 +87,9 @@
         <AssociationConnector Association="IMSModel.FK_TIMS_UserRole_TIMS_Role" ManuallyRouted="false" />
         <AssociationConnector Association="IMSModel.FK_TIMS_UserRole_TIMS_User" ManuallyRouted="false" />
         <AssociationConnector Association="IMSModel.FK_TIMS_UserWatchlistItem_TIMS_User" ManuallyRouted="false" />
+        <AssociationConnector Association="IMSModel.FK_TIMS_ProjectComment_TIMS_Project" />
+        <AssociationConnector Association="IMSModel.FK_TIMS_ProjectInterfaceAgreement_TIMS_Project" />
+        <AssociationConnector Association="IMSModel.FK_TIMS_ProjectActionItem_TIMS_ProjectInterfacePoint" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

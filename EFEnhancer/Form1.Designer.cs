@@ -31,7 +31,8 @@ namespace EFEnhancer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            ActiproSoftware.SyntaxEditor.Document document1 = new ActiproSoftware.SyntaxEditor.Document();
+            ActiproSoftware.SyntaxEditor.Document document6 = new ActiproSoftware.SyntaxEditor.Document();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.button1 = new System.Windows.Forms.Button();
@@ -44,6 +45,9 @@ namespace EFEnhancer
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.splitContainer4 = new System.Windows.Forms.SplitContainer();
             this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -65,15 +69,19 @@ namespace EFEnhancer
             // treeView1
             // 
             this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeView1.ImageIndex = 0;
+            this.treeView1.ImageList = this.imageList1;
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
+            this.treeView1.SelectedImageIndex = 0;
             this.treeView1.Size = new System.Drawing.Size(215, 738);
+            this.treeView1.StateImageList = this.imageList1;
             this.treeView1.TabIndex = 1;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(12, 12);
+            this.button1.Location = new System.Drawing.Point(12, 79);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 2;
@@ -84,7 +92,7 @@ namespace EFEnhancer
             // syntaxEditor1
             // 
             this.syntaxEditor1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.syntaxEditor1.Document = document1;
+            this.syntaxEditor1.Document = document6;
             this.syntaxEditor1.Location = new System.Drawing.Point(0, 0);
             this.syntaxEditor1.Name = "syntaxEditor1";
             this.syntaxEditor1.Size = new System.Drawing.Size(1105, 886);
@@ -118,6 +126,8 @@ namespace EFEnhancer
             // 
             // splitContainer3.Panel1
             // 
+            this.splitContainer3.Panel1.Controls.Add(this.label1);
+            this.splitContainer3.Panel1.Controls.Add(this.textBox1);
             this.splitContainer3.Panel1.Controls.Add(this.button2);
             this.splitContainer3.Panel1.Controls.Add(this.comboBox1);
             this.splitContainer3.Panel1.Controls.Add(this.button1);
@@ -131,7 +141,7 @@ namespace EFEnhancer
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(13, 60);
+            this.button2.Location = new System.Drawing.Point(12, 108);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(128, 23);
             this.button2.TabIndex = 4;
@@ -142,10 +152,11 @@ namespace EFEnhancer
             // comboBox1
             // 
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(94, 13);
+            this.comboBox1.Location = new System.Drawing.Point(12, 12);
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(121, 21);
+            this.comboBox1.Size = new System.Drawing.Size(188, 21);
             this.comboBox1.TabIndex = 3;
+            this.comboBox1.SelectedValueChanged += new System.EventHandler(this.comboBox1_SelectedValueChanged);
             // 
             // splitContainer4
             // 
@@ -172,6 +183,35 @@ namespace EFEnhancer
             this.propertyGrid1.Size = new System.Drawing.Size(318, 886);
             this.propertyGrid1.TabIndex = 2;
             // 
+            // imageList1
+            // 
+            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList1.Images.SetKeyName(0, "FolderClosed_16x.png");
+            this.imageList1.Images.SetKeyName(1, "FolderOpened_16x.png");
+            this.imageList1.Images.SetKeyName(2, "CSFile_16x.png");
+            this.imageList1.Images.SetKeyName(3, "HTMLFile_16x.png");
+            this.imageList1.Images.SetKeyName(4, "Property_16x.png");
+            this.imageList1.Images.SetKeyName(5, "Table_16x.png");
+            this.imageList1.Images.SetKeyName(6, "Column_16x.png");
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(12, 53);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(188, 20);
+            this.textBox1.TabIndex = 5;
+            this.textBox1.Text = "WorkflowWeb";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(12, 37);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(64, 13);
+            this.label1.TabIndex = 6;
+            this.label1.Text = "Namespace";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -185,6 +225,7 @@ namespace EFEnhancer
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.splitContainer3.Panel1.ResumeLayout(false);
+            this.splitContainer3.Panel1.PerformLayout();
             this.splitContainer3.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
             this.splitContainer3.ResumeLayout(false);
@@ -210,6 +251,9 @@ namespace EFEnhancer
         private System.Windows.Forms.PropertyGrid propertyGrid1;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.ImageList imageList1;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox textBox1;
     }
 }
 

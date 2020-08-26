@@ -28,7 +28,7 @@ namespace WorkflowWeb.Business
     public class BaseBusiness<T> : IBusiness<T>
     {
         protected string user;
-        protected IMSEntities db;
+        protected DbContext db;
 
         public BaseBusiness()
         {
@@ -41,7 +41,7 @@ namespace WorkflowWeb.Business
             this.user = user;
         }
 
-        public void SetDB(IMSEntities db)
+        public void SetDB(DbContext db)
         {
             this.db = db;
         }
@@ -62,10 +62,10 @@ namespace WorkflowWeb.Business
         }
 
         public virtual BusinessResult<T> Get(object id)
-        {               
+        {
             var m = (T)db.Set(typeof(T)).Find(id);
 
-            if(m == null)
+            if (m == null)
             {
                 return new BusinessResult<T> { Status = State.NoRecordFound, Data = m, RecordsAffected = 0 };
             }
@@ -79,13 +79,13 @@ namespace WorkflowWeb.Business
             return AccessDenied<T>(o);
         }
 
-        public virtual BusinessResult<T> Edit(object id)
+        public virtual BusinessResult<T> CanEdit(object id)
         {
             var o = Operation.Update;
 
             var result = Get(id);
             if (result.Status == State.Success)
-            {                
+            {
                 if (CheckAuthorization(result.Data, o, user))
                 {
                     return result;
@@ -95,7 +95,7 @@ namespace WorkflowWeb.Business
             return AccessDenied<T>(o);
         }
 
-        public virtual BusinessResult<T> New(T f)
+        public virtual BusinessResult<T> CanNew(T f)
         {
             var o = Operation.Insert;
             if (CheckAuthorization(f, o, user))
@@ -106,10 +106,10 @@ namespace WorkflowWeb.Business
             return AccessDenied<T>(o);
         }
 
-        public virtual BusinessResult<T> Insert(T m)
+        public virtual BusinessResult<T> Create(T m)
         {
-            var result = New(m);
-            if(result.Status == State.Success)
+            var result = CanNew(m);
+            if (result.Status == State.Success)
             {
                 db.Set(typeof(T)).Add(m);
                 result = Commit(m, Operation.Insert);
@@ -126,6 +126,17 @@ namespace WorkflowWeb.Business
                 db.Entry(m).State = EntityState.Modified;
                 var result = Commit(m, Operation.Update);
                 return result;
+            }
+
+            return AccessDenied<T>(o);
+        }
+
+        public virtual BusinessResult<T> CanDelete(T m)
+        {
+            var o = Operation.Delete;
+            if (CheckAuthorization(m, o, user))
+            {
+                return new BusinessResult<T> { Status = State.Success, Data = m, RecordsAffected = 0 };
             }
 
             return AccessDenied<T>(o);
@@ -152,7 +163,7 @@ namespace WorkflowWeb.Business
             {
                 var affected = db.SaveChanges();
                 var status = affected > 0 ? State.Success : State.NoRecordsAffected;
-                if(status == State.Success)
+                if (status == State.Success)
                 {
                     Log(m, o);
                 }
@@ -200,11 +211,11 @@ namespace WorkflowWeb.Business
             //    if (filter.Name != null && filter.Name.ToString() != "00000000-0000-0000-0000-000000000000") data = data.Where(x => x.Name == filter.Name);
             //}
 
-            if(filter != null)
+            if (filter != null)
             {
                 //try reflection
                 var props = typeof(T).GetProperties();
-                foreach(var p in props.Where(p => p.PropertyType.IsPrimitive))
+                foreach (var p in props.Where(p => p.PropertyType.IsPrimitive))
                 {
                     //build expression
                     ParameterExpression parameter = Expression.Parameter(typeof(T), "x");
@@ -216,7 +227,7 @@ namespace WorkflowWeb.Business
                     data = data.Where(lambda);
                 }
             }
-            
+
             return data;
         }
 

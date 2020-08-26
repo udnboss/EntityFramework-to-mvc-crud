@@ -15,11 +15,13 @@ namespace EFEnhancer
         List<Table> Tables { get; set; }
         Table Table { get; set; }
         string Namespace { get; set; }
-        public CsGenerator( string _namespace, List<Table> tables, Table table)
+        string DbContext { get; set; }
+        public CsGenerator(Type dbContext, string _namespace, List<Table> tables, Table table)
         {
             this.Tables = tables;
             this.Table = table;
             this.Namespace = _namespace;
+            this.DbContext = dbContext.Name;
         }
 
         public string GenerateCode(string templateName)
@@ -37,6 +39,7 @@ namespace EFEnhancer
             var template = File.ReadAllText(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "templates\\" + templateName));
 
             template = template
+                            .Replace("_dbcontext_", DbContext)
                             .Replace("_namespace_", Namespace)
                             .Replace("_controller_", Table.Name)
                             .Replace("_table_", Table.Name)
@@ -84,14 +87,28 @@ namespace EFEnhancer
                     );
                 output.Add(str);
             }
-
+            
             return string.Join("\r\n", output);
 
         }
 
         private string GetFilterConditions()
         {
-            var filterconditions = Table.PrimitiveColumns.Select(x => string.Format("if (filter.{0} != null && filter.{0}.ToString() != \"00000000-0000-0000-0000-000000000000\") data = data.Where(x => x.{0} == filter.{0});", x.Name)).ToList();
+            var filterconditions = new List<string>();
+
+            foreach(var c in Table.PrimitiveColumns)
+            {
+                var baseType = c.Type.GenericTypeArguments.Length == 0 ? c.Type : c.Type.GenericTypeArguments[0];
+                var defaultCheckTypes = "Guid,DateTime,int".Split(',');
+                var additionalCheck = "";
+                if(defaultCheckTypes.Contains(baseType.Name))
+                {
+                    additionalCheck = string.Format(" && filter.{0} != default({1})", c.Name, baseType.Name);
+                }
+                var filtercondition = string.Format("if (filter.{0} != null{1}) data = data.Where(x => x.{0} == filter.{0});", c.Name, additionalCheck);
+                filterconditions.Add(filtercondition);
+            }
+            
             return string.Join("\r\n\t\t\t\t\t", filterconditions);
         }
 
@@ -197,7 +214,7 @@ namespace EFEnhancer
             }
             else
             {
-                foreach (var p in t.Parents)
+                foreach (var p in t.Parents.Where(x => x.Table != t))
                 {                
                     GetAllPathsFrom(p.Table, paths, currentPath.ToList());
                 }

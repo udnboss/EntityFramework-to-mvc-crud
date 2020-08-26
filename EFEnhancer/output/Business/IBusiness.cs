@@ -18,12 +18,13 @@ namespace WorkflowWeb.Business
 
         BusinessResult<T> Get(object id);
 
-        BusinessResult<T> New(T m);
-        BusinessResult<T> Edit(object id);
-        BusinessResult<T> Insert(T m);
+        BusinessResult<T> CanNew(T f);
+        BusinessResult<T> CanEdit(object id);
+        BusinessResult<T> Create(T m);
 
         BusinessResult<T> Update(T m);
 
+        BusinessResult<T> CanDelete(T m);
         BusinessResult<T> Delete(T m);
 
         BusinessResult<T> Commit(T t, Operation o);

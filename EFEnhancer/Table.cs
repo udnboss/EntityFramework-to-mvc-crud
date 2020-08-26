@@ -1,6 +1,7 @@
 ﻿using ActiproSoftware.SyntaxEditor.Addons.DotNet.Ast;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,15 @@ using System.Windows.Forms;
 
 namespace EFEnhancer
 {
+    public class Project
+    {
+        public List<Table> Tables { get; set; }
+
+        public Project(List<Table> tables)
+        {
+            this.Tables = tables;
+        }
+    }
     public class Table
     {
         public Type Type { get; set; }
@@ -49,6 +59,12 @@ namespace EFEnhancer
                 return primitive;
             }
         }
+        
+        public List<TableParentRelation> Parents { get; set; }
+
+        [TypeConverter(typeof(StringListConverter))]
+        public string Area { get; set; }
+
         public Table()
         {
             Columns = new List<Column>();
@@ -56,12 +72,6 @@ namespace EFEnhancer
             Dependents = new List<Table>();
         }
 
-        public List<TableParentRelation> Parents { get; set; }
-
-        public override string ToString()
-        {
-            return Name;
-        }
 
         public class TableParentRelation
         {
@@ -74,6 +84,10 @@ namespace EFEnhancer
             }
         }
 
+        public override string ToString()
+        {
+            return Name;
+        }
         public override bool Equals(object obj)
         {
             return ReferenceEquals(this, obj) || (obj is Table && (obj as Table).Name == Name);
@@ -149,5 +163,27 @@ namespace EFEnhancer
                 return Name;
             }
         }
+
+        public class StringListConverter : TypeConverter
+        {
+            public override bool
+            GetStandardValuesSupported(ITypeDescriptorContext context)
+            {
+                return true; // display drop
+            }
+            public override bool
+            GetStandardValuesExclusive(ITypeDescriptorContext context)
+            {
+                return true; // drop-down vs combo
+            }
+            public override StandardValuesCollection
+            GetStandardValues(ITypeDescriptorContext context)
+            {
+                // context.Instance as Table
+                // note you can also look at context etc to build list
+                return new StandardValuesCollection(new string[] { "abc", "def", "ghi" });
+            }
+        }
     }
+
 }

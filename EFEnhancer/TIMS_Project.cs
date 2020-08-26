@@ -25,6 +25,8 @@ namespace EFEnhancer
             this.TIMS_ProjectPackage = new HashSet<TIMS_ProjectPackage>();
             this.TIMS_ProjectPhysicalArea = new HashSet<TIMS_ProjectPhysicalArea>();
             this.TIMS_UserRole = new HashSet<TIMS_UserRole>();
+            this.TIMS_ProjectComment = new HashSet<TIMS_ProjectComment>();
+            this.TIMS_ProjectInterfaceAgreement = new HashSet<TIMS_ProjectInterfaceAgreement>();
         }
     
         public System.Guid ID { get; set; }
@@ -46,5 +48,9 @@ namespace EFEnhancer
         public virtual ICollection<TIMS_ProjectPhysicalArea> TIMS_ProjectPhysicalArea { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TIMS_UserRole> TIMS_UserRole { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<TIMS_ProjectComment> TIMS_ProjectComment { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<TIMS_ProjectInterfaceAgreement> TIMS_ProjectInterfaceAgreement { get; set; }
     }
 }

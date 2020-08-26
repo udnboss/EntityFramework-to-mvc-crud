@@ -16,11 +16,7 @@
 }
 
 <h1>@currentItem._displaycolumn_</h1>
-<div class="card my-5">
-    <div class="card-body">
-        @Html.Action(actionName: "Details", controllerName: controller, routeValues: new { partial = true, id = currentItem._pkname_, ui_html_target, ui_modal_id, ui_list_view, ui_route_filter })
-    </div>
-</div>
+
 <div>
     <script>
         $(function () {
@@ -34,9 +30,15 @@
         });
     </script>
     <ul class="nav nav-tabs" id="tabs-_table_">
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#tab-_table_-">_tablename_</a>
+        </li>
         _tabitems_
     </ul>
     <div class="tab-content" id="tabContent-_table_">
+        <div class="tab-pane fade border border-top-0 p-2" id="tab-_table_-">
+            @Html.Action(actionName: "Details", controllerName: controller, routeValues: new { partial = true, id = currentItem._pkname_, ui_html_target, ui_modal_id, ui_list_view, ui_route_filter })
+        </div>
         _tabpanes_
     </div>
 </div>
