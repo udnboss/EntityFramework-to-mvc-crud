@@ -32,12 +32,12 @@ namespace WorkflowWeb.Business
 
         public BaseBusiness()
         {
-            db = new IMSEntities();
+            db = new DbContext();
         }
 
         public BaseBusiness(DbContext db, string user)
         {
-            this.db = (IMSEntities)db;
+            this.db = (DbContext)db;
             this.user = user;
         }
 

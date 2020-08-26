@@ -17,7 +17,7 @@ namespace WorkflowWeb.Controllers
     {
         protected string user;
         protected IBusiness<T> business;
-        protected DbContext db = new IMSEntities();
+        protected DbContext db = new DbContext();
 
         public BaseController()
         {

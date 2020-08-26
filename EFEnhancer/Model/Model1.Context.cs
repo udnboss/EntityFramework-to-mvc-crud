@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace EFEnhancer
+namespace EFEnhancer.Model
 {
     using System;
     using System.Data.Entity;
