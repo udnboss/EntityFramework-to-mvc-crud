@@ -11,12 +11,12 @@ namespace WorkflowWeb.ViewModels
     {
         public BaseViewModel()
         {
-            
+
         }
 
         public BaseViewModel(T m, bool convertSubs = false)
         {
-            
+
         }
 
         public virtual BaseViewModel<T> FromModel<M>(M m, bool convertSubs)

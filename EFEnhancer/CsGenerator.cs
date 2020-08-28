@@ -266,6 +266,7 @@ namespace EFEnhancer
                                
                 if(c.IsCollection)
                 {
+                    lines.Add("[JsonIgnore]");
                     lines.Add(string.Format("public List<{0}> {1} {{ get; set; }}", typename, c.Name));
                 }
                 else

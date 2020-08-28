@@ -25,20 +25,33 @@ namespace WorkflowWeb.Business
         Error
     }
 
+    public enum TriggerType { Create, Update, Delete }
+    public enum TriggerTiming { Before, After, InsteadOf }
+    public class Trigger<T>
+    {
+        public int Order { get; set; }
+        public TriggerType Type { get; set; }
+        public TriggerTiming Timing { get; set; }
+        public Func<T, BusinessResult<T>> Function { get; set; }
+    }
+
     public class BaseBusiness<T> : IBusiness<T>
     {
         protected string user;
         protected DbContext db;
 
+        public List<Trigger<T>> Triggers { get; set; }
+
         public BaseBusiness()
         {
-            db = new DbContext();
+            Triggers = new List<Trigger<T>>();
         }
 
         public BaseBusiness(DbContext db, string user)
         {
-            this.db = (DbContext)db;
+            this.db = db;
             this.user = user;
+            Triggers = new List<Trigger<T>>();
         }
 
         public void SetDB(DbContext db)
@@ -108,14 +121,18 @@ namespace WorkflowWeb.Business
 
         public virtual BusinessResult<T> Create(T m)
         {
-            var result = CanNew(m);
-            if (result.Status == State.Success)
+            using (var transaction = db.Database.BeginTransaction())
             {
-                db.Set(typeof(T)).Add(m);
-                result = Commit(m, Operation.Insert);
-            }
+                var result = CanNew(m);
+                if (result.Status == State.Success)
+                {
+                    //this operation
+                    Action<T> create = (model) => { db.Set(typeof(T)).Add(model); };
+                    result = PerformAll(m, Operation.Insert, create);
+                }
 
-            return result;
+                return result;
+            }
         }
 
         public virtual BusinessResult<T> Update(T m)
@@ -123,9 +140,9 @@ namespace WorkflowWeb.Business
             var o = Operation.Update;
             if (CheckAuthorization(m, o, user))
             {
-                db.Entry(m).State = EntityState.Modified;
-                var result = Commit(m, Operation.Update);
-                return result;
+                //this operation
+                Action<T> create = (model) => { db.Entry(model).State = EntityState.Modified; };
+                return PerformAll(m, o, create);
             }
 
             return AccessDenied<T>(o);
@@ -147,31 +164,104 @@ namespace WorkflowWeb.Business
             var o = Operation.Delete;
             if (CheckAuthorization(m, o, user))
             {
-                //db.Set(typeof(T)).Remove(m);
-                var em = db.Entry(m);
-                em.State = EntityState.Deleted;
-                var result = Commit(m, Operation.Delete);
-                return result;
+                Action<T> action = (model) => {
+                    //db.Set(typeof(T)).Remove(m);
+                    db.Entry(model).State = EntityState.Deleted;
+                };
+
+                return PerformAll(m, o, action); ;
             }
 
             return AccessDenied<T>(o);
         }
 
-        public virtual BusinessResult<T> Commit(T m, Operation o)
+        public virtual BusinessResult<T> PerformAll(T m, Operation o, Action<T> action)
         {
-            try
+            if (db.Database.CurrentTransaction != null)
             {
-                var affected = db.SaveChanges();
-                var status = affected > 0 ? State.Success : State.NoRecordsAffected;
-                if (status == State.Success)
-                {
-                    Log(m, o);
-                }
-                return new BusinessResult<T> { Status = status, RecordsAffected = affected, Message = "" };
+                db.Database.CurrentTransaction.Dispose();
             }
-            catch (Exception e)
+
+            using (var transaction = db.Database.BeginTransaction())
             {
-                return new BusinessResult<T> { Status = State.Error, RecordsAffected = 0, Message = e.Message + (e.InnerException != null ? "; " + e.InnerException.Message : "") };
+                var result = new BusinessResult<T>();
+
+                var results = new List<BusinessResult<T>>();
+                //before operations
+                var beforeTriggers = Triggers.Where(t => t.Type == TriggerType.Create && t.Timing == TriggerTiming.Before);
+                foreach (var t in beforeTriggers)
+                {
+                    var tResult = t.Function.Invoke(m);
+                    results.Add(tResult);
+                }
+
+                //this operation
+                try
+                {
+                    action.Invoke(m);
+                    results.Add(new BusinessResult<T> { Status = State.Success, Data = m });
+                }
+                catch (Exception ex)
+                {
+                    results.Add(new BusinessResult<T> { Status = State.Error, Data = m, Message = ex.Message });
+                }
+
+                //after operations
+                var afterTriggers = Triggers.Where(t => t.Type == TriggerType.Create && t.Timing == TriggerTiming.After);
+                foreach (var t in afterTriggers)
+                {
+                    var tResult = t.Function.Invoke(m);
+                    results.Add(tResult);
+                }
+
+                var failedResults = results.Where(x => x.Status == State.Error || x.Status == State.AccessDenied).ToList();
+
+                try
+                {
+                    //try to save
+                    try
+                    {
+                        var affected = db.SaveChanges();
+                        var status = affected > 0 ? State.Success : State.NoRecordsAffected;
+                        result = new BusinessResult<T> { Status = status, RecordsAffected = affected, Message = "" };
+                    }
+                    catch (Exception e)
+                    {
+                        result = new BusinessResult<T> { Status = State.Error, RecordsAffected = 0, Message = e.Message + (e.InnerException != null ? "; " + e.InnerException.Message : "") };
+                    }
+
+                    if (failedResults.Count == 0)
+                    {
+                        //commit if everything is ok
+                        transaction.Commit();
+                        Log(m, o);
+                        result = new BusinessResult<T> { Status = State.Success, Data = m };
+                    }
+                    else
+                    {
+                        //else rollback
+                        transaction.Rollback();
+                        result = new BusinessResult<T>
+                        {
+                            Status = State.Error,
+                            Data = m,
+                            Message = string.Join("\r\n", failedResults.Select(x => x.Message))
+                        };
+                    }
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    result = new BusinessResult<T>
+                    {
+                        Status = State.Error,
+                        Data = m,
+                        Message = ex.Message
+                    };
+                }
+
+
+                return result;
             }
         }
 

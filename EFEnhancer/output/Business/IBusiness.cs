@@ -27,7 +27,7 @@ namespace WorkflowWeb.Business
         BusinessResult<T> CanDelete(T m);
         BusinessResult<T> Delete(T m);
 
-        BusinessResult<T> Commit(T t, Operation o);
+        BusinessResult<T> PerformAll(T m, Operation o, Action<T> action);
 
         BusinessResult<T> AccessDenied<T>(Operation o);
         BusinessResult<List<T>> GetList(T t);
