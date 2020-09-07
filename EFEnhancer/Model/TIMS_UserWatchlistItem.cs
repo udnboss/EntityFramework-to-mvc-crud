@@ -20,7 +20,7 @@ namespace EFEnhancer.Model
         public Nullable<System.Guid> ProjectInterfaceAgreementID { get; set; }
         public Nullable<System.Guid> ProjectActionItemID { get; set; }
     
-        public virtual TIMS_ProjectActionItem TIMS_ProjectActionItem { get; set; }
+        public virtual TIMS_ActionItem TIMS_ActionItem { get; set; }
         public virtual TIMS_ProjectInterfaceAgreement TIMS_ProjectInterfaceAgreement { get; set; }
         public virtual TIMS_ProjectInterfacePoint TIMS_ProjectInterfacePoint { get; set; }
         public virtual TIMS_User TIMS_User { get; set; }

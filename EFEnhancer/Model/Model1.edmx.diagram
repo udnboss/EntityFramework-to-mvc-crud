@@ -4,38 +4,43 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="45b68853cb7e472abf59aa04dc42d435" Name="Diagram1">
-        <EntityTypeShape EntityType="IMSModel.TIMS_Contractor" Width="1.5" PointX="3.75" PointY="14.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="IMSModel.TIMS_Discipline" Width="1.5" PointX="0.75" PointY="19.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="IMSModel.TIMS_Phase" Width="1.5" PointX="3" PointY="32" IsExpanded="true" />
-        <EntityTypeShape EntityType="IMSModel.TIMS_Project" Width="1.5" PointX="0.75" PointY="23.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="IMSModel.TIMS_ProjectActionItem" Width="1.5" PointX="3" PointY="22.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="IMSModel.TIMS_ProjectActionItemWorkflow" Width="1.5" PointX="8.25" PointY="26.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="IMSModel.TIMS_ProjectArea" Width="1.5" PointX="3" PointY="26.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="IMSModel.TIMS_ProjectAttachment" Width="1.5" PointX="13.5" PointY="30.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="IMSModel.TIMS_ProjectComment" Width="1.5" PointX="10.5" PointY="32.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="IMSModel.TIMS_ProjectContractor" Width="1.5" PointX="6" PointY="21.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="IMSModel.TIMS_ProjectDiscipline" Width="1.5" PointX="3" PointY="19" IsExpanded="true" />
-        <EntityTypeShape EntityType="IMSModel.TIMS_ProjectDisciplineInterfaceType" Width="1.5" PointX="5.25" PointY="17.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="IMSModel.TIMS_ProjectDisciplineInterfaceTypeField" Width="1.5" PointX="7.5" PointY="17.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="IMSModel.TIMS_ProjectInterfaceAgreement" Width="1.5" PointX="12.5" PointY="18.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="IMSModel.TIMS_ProjectInterfaceAgreementWorkflow" Width="1.5" PointX="5.25" PointY="25.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="IMSModel.TIMS_ProjectInterfacePoint" Width="1.5" PointX="13.5" PointY="25.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="IMSModel.TIMS_ProjectInterfacePointFieldEntry" Width="1.5" PointX="10.75" PointY="25.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="IMSModel.TIMS_ProjectInterfacePointWorkflow" Width="1.5" PointX="5.25" PointY="31.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="IMSModel.TIMS_ProjectPackage" Width="1.5" PointX="8.25" PointY="22.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="IMSModel.TIMS_ProjectPhysicalArea" Width="1.5" PointX="3" PointY="35.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="IMSModel.TIMS_Role" Width="1.5" PointX="8.25" PointY="31" IsExpanded="true" />
-        <EntityTypeShape EntityType="IMSModel.TIMS_User" Width="1.5" PointX="8.25" PointY="33.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="IMSModel.TIMS_UserRole" Width="1.5" PointX="10.5" PointY="28.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="IMSModel.TIMS_UserWatchlistItem" Width="1.5" PointX="10.25" PointY="17.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="IMSModel.TIMS_WorkflowAction" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="IMSModel.TIMS_WorkflowState" Width="1.5" PointX="3" PointY="39.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="IMSModel.TIMS_WorkflowType" Width="1.5" PointX="6" PointY="38.25" IsExpanded="true" />
+      <Diagram DiagramId="6474ff0cb194442e8b81b9535cb1282f" Name="Diagram1">
+        <EntityTypeShape EntityType="IMSModel.TIMS_ActionItem" Width="1.5" PointX="1.5" PointY="27.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="IMSModel.TIMS_ActionItemWorkflow" Width="1.5" PointX="3" PointY="14.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="IMSModel.TIMS_Contractor" Width="1.5" PointX="1.5" PointY="55.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="IMSModel.TIMS_Discipline" Width="1.5" PointX="1.5" PointY="34.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="IMSModel.TIMS_Phase" Width="1.5" PointX="0.75" PointY="1.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="IMSModel.TIMS_Project" Width="1.5" PointX="1.5" PointY="22.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="IMSModel.TIMS_ProjectArea" Width="1.5" PointX="0.75" PointY="4.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="IMSModel.TIMS_ProjectAttachment" Width="1.5" PointX="8.25" PointY="10.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="IMSModel.TIMS_ProjectComment" Width="1.5" PointX="11.25" PointY="11.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="IMSModel.TIMS_ProjectContractor" Width="1.5" PointX="1.5" PointY="51.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="IMSModel.TIMS_ProjectDiscipline" Width="1.5" PointX="1.5" PointY="30.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="IMSModel.TIMS_ProjectDisciplineInterfaceType" Width="1.5" PointX="0.75" PointY="7.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="IMSModel.TIMS_ProjectDisciplineInterfaceTypeField" Width="1.5" PointX="3" PointY="3.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="IMSModel.TIMS_ProjectInterfaceAgreement" Width="1.5" PointX="3.75" PointY="41.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="IMSModel.TIMS_ProjectInterfaceAgreementWorkflow" Width="1.5" PointX="6" PointY="13.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="IMSModel.TIMS_ProjectInterfacePoint" Width="1.5" PointX="1.5" PointY="41.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="IMSModel.TIMS_ProjectInterfacePointFieldEntry" Width="1.5" PointX="5.25" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="IMSModel.TIMS_ProjectInterfacePointWorkflow" Width="1.5" PointX="3" PointY="7" IsExpanded="true" />
+        <EntityTypeShape EntityType="IMSModel.TIMS_ProjectPackage" Width="1.5" PointX="1.5" PointY="47.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="IMSModel.TIMS_ProjectPhysicalArea" Width="1.5" PointX="0.75" PointY="11" IsExpanded="true" />
+        <EntityTypeShape EntityType="IMSModel.TIMS_Role" Width="1.5" PointX="0.75" PointY="58.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="IMSModel.TIMS_User" Width="1.5" PointX="0.75" PointY="14.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="IMSModel.TIMS_UserRole" Width="1.5" PointX="3" PointY="18.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="IMSModel.TIMS_UserWatchlistItem" Width="1.5" PointX="6" PointY="9.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="IMSModel.TIMS_WorkflowAction" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="IMSModel.TIMS_WorkflowState" Width="1.5" PointX="0.75" PointY="18.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="IMSModel.TIMS_WorkflowType" Width="1.5" PointX="0.75" PointY="37.5" IsExpanded="true" />
+        <AssociationConnector Association="IMSModel.FK_TIMS_ActionItemWorkflow_TIMS_ActionItem" ManuallyRouted="false" />
+        <AssociationConnector Association="IMSModel.FK_TIMS_UserWatchlistItem_TIMS_ProjectActionItem" ManuallyRouted="false" />
+        <AssociationConnector Association="IMSModel.FK_TIMS_ActionItemWorkflow_TIMS_User" ManuallyRouted="false" />
+        <AssociationConnector Association="IMSModel.FK_TIMS_ActionItemWorkflow_TIMS_WorkflowType" ManuallyRouted="false" />
+        <AssociationConnector Association="IMSModel.FK_TIMS_ProjectAttachment_TIMS_ActionItemWorkflow" ManuallyRouted="false" />
+        <AssociationConnector Association="IMSModel.FK_TIMS_ProjectComment_TIMS_ActionItemWorkflow" ManuallyRouted="false" />
         <AssociationConnector Association="IMSModel.FK_TIMS_ProjectContractor_TIMS_Contractor" ManuallyRouted="false" />
         <AssociationConnector Association="IMSModel.FK_TIMS_ProjectDiscipline_TIMS_Discipline" ManuallyRouted="false" />
         <AssociationConnector Association="IMSModel.FK_TIMS_ProjectInterfacePointWorkflow_TIMS_Phase" ManuallyRouted="false" />
-        <AssociationConnector Association="IMSModel.FK_TIMS_ProjectActionItem_TIMS_Project" ManuallyRouted="false" />
         <AssociationConnector Association="IMSModel.FK_TIMS_ProjectArea_TIMS_Project" ManuallyRouted="false" />
         <AssociationConnector Association="IMSModel.FK_TIMS_ProjectComment_TIMS_Project" ManuallyRouted="false" />
         <AssociationConnector Association="IMSModel.FK_TIMS_ProjectContractor_TIMS_Project" ManuallyRouted="false" />
@@ -45,14 +50,6 @@
         <AssociationConnector Association="IMSModel.FK_TIMS_ProjectPackage_TIMS_Project" ManuallyRouted="false" />
         <AssociationConnector Association="IMSModel.FK_TIMS_ProjectPhysicalArea_TIMS_Project" ManuallyRouted="false" />
         <AssociationConnector Association="IMSModel.FK_TIMS_UserRole_TIMS_Project" ManuallyRouted="false" />
-        <AssociationConnector Association="IMSModel.FK_TIMS_ProjectActionItem_TIMS_ProjectInterfaceAgreement" ManuallyRouted="false" />
-        <AssociationConnector Association="IMSModel.FK_TIMS_ProjectActionItem_TIMS_ProjectInterfacePoint" ManuallyRouted="false" />
-        <AssociationConnector Association="IMSModel.FK_TIMS_ProjectActionItemWorkflow_TIMS_ProjectActionItem" ManuallyRouted="false" />
-        <AssociationConnector Association="IMSModel.FK_TIMS_UserWatchlistItem_TIMS_ProjectActionItem" ManuallyRouted="false" />
-        <AssociationConnector Association="IMSModel.FK_TIMS_ProjectActionItemWorkflow_TIMS_User" ManuallyRouted="false" />
-        <AssociationConnector Association="IMSModel.FK_TIMS_ProjectActionItemWorkflow_TIMS_WorkflowType" ManuallyRouted="false" />
-        <AssociationConnector Association="IMSModel.FK_TIMS_ProjectAttachment_TIMS_ProjectActionItemWorkflow" ManuallyRouted="false" />
-        <AssociationConnector Association="IMSModel.FK_TIMS_ProjectComment_TIMS_ProjectActionItemWorkflow" ManuallyRouted="false" />
         <AssociationConnector Association="IMSModel.FK_TIMS_ProjectInterfaceAgreementWorkflow_TIMS_ProjectArea" ManuallyRouted="false" />
         <AssociationConnector Association="IMSModel.FK_TIMS_ProjectInterfacePointWorkflow_TIMS_ProjectArea" ManuallyRouted="false" />
         <AssociationConnector Association="IMSModel.FK_TIMS_ProjectAttachment_TIMS_ProjectInterfaceAgreementWorkflow" ManuallyRouted="false" />
@@ -90,6 +87,9 @@
         <AssociationConnector Association="IMSModel.FK_TIMS_UserRole_TIMS_Role" ManuallyRouted="false" />
         <AssociationConnector Association="IMSModel.FK_TIMS_UserRole_TIMS_User" ManuallyRouted="false" />
         <AssociationConnector Association="IMSModel.FK_TIMS_UserWatchlistItem_TIMS_User" ManuallyRouted="false" />
+        <AssociationConnector Association="IMSModel.TIMS_ProjectActionItem" ManuallyRouted="false" />
+        <AssociationConnector Association="IMSModel.TIMS_ProjectInterfaceAgreementActionItem" ManuallyRouted="false" />
+        <AssociationConnector Association="IMSModel.TIMS_ProjectInterfacePointActionItem" ManuallyRouted="false" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

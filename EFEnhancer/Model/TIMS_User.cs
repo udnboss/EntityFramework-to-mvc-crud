@@ -17,7 +17,7 @@ namespace EFEnhancer.Model
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public TIMS_User()
         {
-            this.TIMS_ProjectActionItemWorkflow = new HashSet<TIMS_ProjectActionItemWorkflow>();
+            this.TIMS_ActionItemWorkflow = new HashSet<TIMS_ActionItemWorkflow>();
             this.TIMS_ProjectAttachment = new HashSet<TIMS_ProjectAttachment>();
             this.TIMS_ProjectComment = new HashSet<TIMS_ProjectComment>();
             this.TIMS_ProjectInterfaceAgreementWorkflow = new HashSet<TIMS_ProjectInterfaceAgreementWorkflow>();
@@ -30,7 +30,7 @@ namespace EFEnhancer.Model
         public string Name { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<TIMS_ProjectActionItemWorkflow> TIMS_ProjectActionItemWorkflow { get; set; }
+        public virtual ICollection<TIMS_ActionItemWorkflow> TIMS_ActionItemWorkflow { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TIMS_ProjectAttachment> TIMS_ProjectAttachment { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

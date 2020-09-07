@@ -22,6 +22,7 @@ namespace WorkflowWeb.Controllers
         public BaseController()
         {
             user = "Ali";
+            db = new IMSEntities();
         }
 
         protected ContentResult JsonOut(object data)

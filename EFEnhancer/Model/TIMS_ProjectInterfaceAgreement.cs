@@ -17,9 +17,9 @@ namespace EFEnhancer.Model
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public TIMS_ProjectInterfaceAgreement()
         {
-            this.TIMS_ProjectActionItem = new HashSet<TIMS_ProjectActionItem>();
             this.TIMS_ProjectInterfaceAgreementWorkflow = new HashSet<TIMS_ProjectInterfaceAgreementWorkflow>();
             this.TIMS_UserWatchlistItem = new HashSet<TIMS_UserWatchlistItem>();
+            this.TIMS_ActionItem = new HashSet<TIMS_ActionItem>();
         }
     
         public System.Guid ID { get; set; }
@@ -40,8 +40,6 @@ namespace EFEnhancer.Model
         public Nullable<System.DateTime> CloseDate { get; set; }
     
         public virtual TIMS_Project TIMS_Project { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<TIMS_ProjectActionItem> TIMS_ProjectActionItem { get; set; }
         public virtual TIMS_ProjectInterfacePoint TIMS_ProjectInterfacePoint { get; set; }
         public virtual TIMS_ProjectPackage TIMS_ProjectPackage { get; set; }
         public virtual TIMS_ProjectPackage TIMS_ProjectPackage1 { get; set; }
@@ -49,5 +47,7 @@ namespace EFEnhancer.Model
         public virtual ICollection<TIMS_ProjectInterfaceAgreementWorkflow> TIMS_ProjectInterfaceAgreementWorkflow { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TIMS_UserWatchlistItem> TIMS_UserWatchlistItem { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<TIMS_ActionItem> TIMS_ActionItem { get; set; }
     }
 }

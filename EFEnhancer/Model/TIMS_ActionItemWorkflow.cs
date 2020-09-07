@@ -12,10 +12,10 @@ namespace EFEnhancer.Model
     using System;
     using System.Collections.Generic;
     
-    public partial class TIMS_ProjectActionItemWorkflow
+    public partial class TIMS_ActionItemWorkflow
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public TIMS_ProjectActionItemWorkflow()
+        public TIMS_ActionItemWorkflow()
         {
             this.TIMS_ProjectAttachment = new HashSet<TIMS_ProjectAttachment>();
             this.TIMS_ProjectComment = new HashSet<TIMS_ProjectComment>();
@@ -30,7 +30,7 @@ namespace EFEnhancer.Model
         public Nullable<System.Guid> UserID { get; set; }
         public Nullable<bool> IsDraft { get; set; }
     
-        public virtual TIMS_ProjectActionItem TIMS_ProjectActionItem { get; set; }
+        public virtual TIMS_ActionItem TIMS_ActionItem { get; set; }
         public virtual TIMS_User TIMS_User { get; set; }
         public virtual TIMS_WorkflowType TIMS_WorkflowType { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

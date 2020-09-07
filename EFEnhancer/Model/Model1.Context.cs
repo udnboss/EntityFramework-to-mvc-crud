@@ -25,12 +25,12 @@ namespace EFEnhancer.Model
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<TIMS_ActionItem> TIMS_ActionItem { get; set; }
+        public virtual DbSet<TIMS_ActionItemWorkflow> TIMS_ActionItemWorkflow { get; set; }
         public virtual DbSet<TIMS_Contractor> TIMS_Contractor { get; set; }
         public virtual DbSet<TIMS_Discipline> TIMS_Discipline { get; set; }
         public virtual DbSet<TIMS_Phase> TIMS_Phase { get; set; }
         public virtual DbSet<TIMS_Project> TIMS_Project { get; set; }
-        public virtual DbSet<TIMS_ProjectActionItem> TIMS_ProjectActionItem { get; set; }
-        public virtual DbSet<TIMS_ProjectActionItemWorkflow> TIMS_ProjectActionItemWorkflow { get; set; }
         public virtual DbSet<TIMS_ProjectArea> TIMS_ProjectArea { get; set; }
         public virtual DbSet<TIMS_ProjectAttachment> TIMS_ProjectAttachment { get; set; }
         public virtual DbSet<TIMS_ProjectComment> TIMS_ProjectComment { get; set; }
